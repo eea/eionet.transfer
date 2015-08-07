@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body>
+    <div id="container">
+      <div th:include="layout :: bannerFragment">
+      </div>
+      <div id="workarea">
+        <h1 th:text="${title}">Page title</h1>
+        <form action="uploadSuccess.html" th:action="@{/fileupload}" method="post" enctype="multipart/form-data">
+          <label for="file">Select a file to upload</label>
+          <input type="file" name="file" id="file"/>
+            <select name="fileTTL" id="fileTTL">
+              <option selected="selected" value="240">10 days</option>
+              <option value="720">1 month</option>
+              <option value="2160">3 months</option>
+            </select>
+          <input type="submit" value="Upload" />
+        </form>
+      </div>
+    </div> <!-- container -->
+    <div id="pagefoot" th:include="layout :: footerFragment">
+    Footer
+    </div>
+  </body>
+</html>

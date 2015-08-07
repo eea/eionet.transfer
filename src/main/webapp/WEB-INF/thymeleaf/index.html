@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body>
+    <div id="container">
+      <div th:include="layout :: bannerFragment">
+      </div>
+      <div id="workarea">
+        <h1>EEA Web Transfer</h1>
+<p>
+Welcome roug to EEA Web Transfer! This website can facilitate a private transfer of files of up to X GB between you and any number of recipients.
+</p>
+<p>
+The site is only open to uploaders with an Eionet account.
+</p>
+<p>
+When you have uploaded your file it will show you a URL, which you can email to the intended recipients. The file will only be stored on the website for a limited number of days.
+</p>
+<ul>
+<li><a href="fileupload">Upload file</a></li>
+<li th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+  This content is only shown to administrators.
+</li>
+<li sec:authorize-url="/uploads">
+    This will only be displayed if authenticated user can call the "/uploads" URL.
+</li>
+</ul>
+      </div>
+    </div>
+    <!-- container -->
+    <div id="pagefoot" th:include="layout :: footerFragment">
+    Footer
+    </div>
+  </body>
+</html>
