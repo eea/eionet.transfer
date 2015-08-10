@@ -54,7 +54,7 @@ public class UploadsControllerTest {
         databaseTester.onSetup();
     }
 
-    @Ignore @Test
+    @Test
     public void testAbout() throws Exception {
         this.mockMvc.perform(get("/uploads"))
                 .andExpect(status().isOk())

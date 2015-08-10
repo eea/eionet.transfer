@@ -6,6 +6,7 @@ import eionet.transfer.model.Upload;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.File;
+import java.sql.Date;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,9 +40,14 @@ public class FileUploadController {
 
         String dirFolder = System.getProperty("files.folder", "/var/tmp");
         String uuidName = UUID.randomUUID().toString();
+        long now = System.currentTimeMillis();
+        Date expirationDate = new Date(now + fileTTL * 3600L * 1000L);
+
         File destination = new File(dirFolder, uuidName);
         myFile.transferTo(destination);
         Upload rec = new Upload(uuidName, "testfile.txt");
+        rec.setExpires(expirationDate);
+        rec.setUploader("FIXME");
         uploadsService.save(rec);
         // Redirect to a successful upload page 
         return "redirect:uploadSuccess"; 

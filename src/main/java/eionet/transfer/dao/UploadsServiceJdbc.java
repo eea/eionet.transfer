@@ -61,4 +61,10 @@ public class UploadsServiceJdbc implements UploadsService {
         return uploadList;
     }
 
+    @Override
+    public void deleteAll() {
+        String query = "DELETE FROM uploads";
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(query);
+    }
 }

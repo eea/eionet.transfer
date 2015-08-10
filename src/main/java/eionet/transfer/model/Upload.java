@@ -23,11 +23,24 @@ public class Upload {
         return expires;
     }
 
+    public void setExpires(Date expires) {
+        this.expires = expires;
+    }
+
     public String getFilename() {
         return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public String getUploader() {
         return uploader;
     }
+
+    public void setUploader(String uploader) {
+        this.uploader = uploader;
+    }
+
 }

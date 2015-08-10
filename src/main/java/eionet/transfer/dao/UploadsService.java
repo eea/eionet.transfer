@@ -17,8 +17,10 @@ public interface UploadsService {
     //void update(Upload upload);
 
     //Delete
-    //public void deleteByCode(String code);
+    //void deleteById(String id);
 
     //Get All
     List<Upload> getAll();
+
+    void deleteAll();
 }
