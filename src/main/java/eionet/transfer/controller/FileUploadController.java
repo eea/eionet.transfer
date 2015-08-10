@@ -1,6 +1,8 @@
 package eionet.transfer.controller;
 
 import eionet.transfer.util.BreadCrumbs;
+import eionet.transfer.dao.UploadsService;
+import eionet.transfer.model.Upload;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.File;
@@ -21,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class FileUploadController {
 
+    @Autowired
+    private UploadsService uploadsService;
+
     @RequestMapping(value = "/fileupload")
     public String fileUpload(Model model) {
         String pageTitle = "Upload file";
@@ -32,14 +37,18 @@ public class FileUploadController {
     public String importFile(@RequestParam("file") MultipartFile myFile, @RequestParam("fileTTL") int fileTTL) throws IOException { 
         String pageTitle = "Upload file";
 
-        File destination = new File("/var/tmp", UUID.randomUUID().toString());
+        String dirFolder = System.getProperty("files.folder", "/var/tmp");
+        String uuidName = UUID.randomUUID().toString();
+        File destination = new File(dirFolder, uuidName);
         myFile.transferTo(destination);
+        Upload rec = new Upload(uuidName, "testfile.txt");
+        uploadsService.save(rec);
         // Redirect to a successful upload page 
         return "redirect:uploadSuccess"; 
     } 
 
     @RequestMapping(value = "/uploadSuccess")
-    public String faq(Model model) {
+    public String uploadResult(Model model) {
         String pageTitle = "File uploaded";
         BreadCrumbs.set(model, pageTitle);
         return "uploadSuccess";

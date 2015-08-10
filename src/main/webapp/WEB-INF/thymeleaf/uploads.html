@@ -9,19 +9,19 @@
       </div>
       <div id="workarea">
         <h1 th:text="${title}">Page title here</h1>
-        <div th:if="${#lists.isEmpty(facilities)}">Table is empty.</div>
-        <div th:if="${not #lists.isEmpty(facilities)}">
+        <div th:if="${#lists.isEmpty(uploads)}">Table is empty.</div>
+        <div th:if="${not #lists.isEmpty(uploads)}">
           <table>
             <thead>
               <tr>
-                <th> Code </th>
-                <th> Facility name</th>
+                <th> UUID </th>
+                <th> File name</th>
               </tr>
             </thead>
             <tbody th:remove="all-but-first">
-              <tr th:each="facilities : ${facilities}">
-                <td><a href="#" th:href="@{'/facilities/' + ${facilities.code}}" th:text="${facilities.code}">99999</a></td>
-                <td th:text="${facilities.name}">Long realistic company name</td>
+              <tr th:each="uploads : ${uploads}">
+                <td th:text="${uploads.id}">99999</td>
+                <td th:text="${uploads.filename}">Long realistic file name</td>
               </tr>
               <tr>
                 <td><a href="#">88888</a></td>

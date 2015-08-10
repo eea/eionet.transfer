@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body>
+    <div id="container">
+      <div th:include="layout :: bannerFragment">
+      </div>
+      <div id="workarea">
+        <h1 th:text="${title}">Page title</h1>
+        <div>
+<ul>
+<li>This is a free service, which allow you to upload your files and share them with your colleagues.</li>
+<li>By uploading any files, you accept these terms &amp; conditions</li>
+<li>You're not allowed to upload any illegal content, like copyrighted music, videos, viruses, etc.</li>
+</ul>
+</div>
+      </div>
+    </div>
+    <!-- container -->
+    <div id="pagefoot" th:include="layout :: footerFragment">
+    Footer
+    </div>
+  </body>
+</html>

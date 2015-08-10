@@ -33,7 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
  * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.BUILD-SNAPSHOT/reference/htmlsingle/#spring-mvc-test-framework">MVC testing</a>
  * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.RC2/api/org/springframework/test/web/servlet/ResultActions.html">Result Actions</a>
  */
-public class SimpleDocControllerTest {
+public class UploadsControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -56,10 +56,10 @@ public class SimpleDocControllerTest {
 
     @Ignore @Test
     public void testAbout() throws Exception {
-        this.mockMvc.perform(get("/about"))
+        this.mockMvc.perform(get("/uploads"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("breadcrumbs"))
-                .andExpect(model().attributeExists("content"))
-                .andExpect(view().name("simplecontent"));
+                .andExpect(model().attributeExists("uploads"))
+                .andExpect(view().name("uploads"));
     }
 }

@@ -11,11 +11,13 @@
         <form action="uploadSuccess.html" th:action="@{/fileupload}" method="post" enctype="multipart/form-data">
           <label for="file">Select a file to upload</label>
           <input type="file" name="file" id="file"/>
-            <select name="fileTTL" id="fileTTL">
-              <option selected="selected" value="240">10 days</option>
-              <option value="720">1 month</option>
-              <option value="2160">3 months</option>
-            </select>
+          <br/>
+          <label for="fileTTL">Keep for</label>
+          <select name="fileTTL" id="fileTTL">
+            <option selected="selected" value="240">10 days</option>
+            <option value="720">1 month</option>
+            <option value="2160">3 months</option>
+          </select>
           <input type="submit" value="Upload" />
         </form>
       </div>
