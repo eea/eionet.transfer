@@ -1,8 +1,11 @@
-
-Unit tests on database
-
-HTML5 progress bar, see http://www.matlus.com/html5-file-upload-with-progress/
-HTML file drag and drop
-Table for authorisations
-CAS login
-
+To be implemented:
+* Unit tests on database integration
+* HTML5 (or JQuery) upload progress bar, see http://www.matlus.com/html5-file-upload-with-progress/
+* Graceful recovery if there is not enough space for storage
+* HTML file drag and drop
+* Table for authorisations
+* CAS login
+* Check for thread safety
+* Nicer user interface
+* Must be able to handle 5 GB uploads
+* The embedded h2 server doesn't like war redeployments. Perhaps start up the TCP server? See http://www.h2database.com/html/tutorial.html#spring
