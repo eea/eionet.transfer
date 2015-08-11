@@ -1,6 +1,7 @@
 package eionet.transfer.controller;
 
 import eionet.transfer.util.BreadCrumbs;
+import eionet.transfer.dao.StorageService;
 import eionet.transfer.dao.UploadsService;
 import eionet.transfer.model.Upload;
 import java.io.InputStream;
@@ -27,6 +28,9 @@ public class FileUploadController {
     @Autowired
     private UploadsService uploadsService;
 
+    @Autowired
+    private StorageService storageService;
+
     @RequestMapping(value = "/fileupload")
     public String fileUpload(Model model) {
         String pageTitle = "Upload file";
@@ -45,7 +49,7 @@ public class FileUploadController {
 
         File destination = new File(dirFolder, uuidName);
         myFile.transferTo(destination);
-        Upload rec = new Upload(uuidName, "testfile.txt");
+        Upload rec = new Upload(uuidName, myFile.getName());
         rec.setExpires(expirationDate);
         rec.setUploader("FIXME");
         uploadsService.save(rec);

@@ -12,13 +12,15 @@
           <label for="file">Select a file to upload</label>
           <input type="file" name="file" id="file"/>
           <br/>
-          <label for="fileTTL">Keep for</label>
+          <label for="fileTTL">The file will be kept on the server for:</label>
           <select name="fileTTL" id="fileTTL">
             <option selected="selected" value="240">10 days</option>
             <option value="720">1 month</option>
             <option value="2160">3 months</option>
           </select>
+          <p>Click this button to upload &amp; share your file</p>
           <input type="submit" value="Upload" />
+          <p>By uploading your files, you accept our <a href="about.html" th:href="@{/about}">terms &amp; conditions</a></p>
         </form>
       </div>
     </div> <!-- container -->

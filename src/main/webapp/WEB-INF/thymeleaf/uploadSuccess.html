@@ -8,6 +8,13 @@
       </div>
       <div id="workarea">
         <h1>File successfully uploaded</h1>
+        <p>
+        The file will be stored on the server for XX days.
+        </p>
+        <ul>
+        <li>Use this URL <a href="download.html" th:href="@{/download}">http://xyz/download/UUID</a> to download the file</li>
+        <li>Use this URL <a href="delete.html" th:href="@{/delete}">http://xyz/delete/UUID</a> to delete the file</li>
+        </ul>
       </div>
     </div>
     <!-- container -->

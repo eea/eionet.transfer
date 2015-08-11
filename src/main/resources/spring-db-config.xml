@@ -28,4 +28,8 @@
                 <property name="dataSource" ref="dataSource" />
         </bean>
 
+        <bean id="storageService" class="eionet.transfer.dao.StorageServiceFiles">
+                <property name="dirFolder" value="/var/tmp" />
+        </bean>
+
 </beans>
