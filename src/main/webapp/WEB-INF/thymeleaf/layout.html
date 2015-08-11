@@ -17,15 +17,15 @@
             <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
           </div>
           <div id="righttools">
-            <span sec:authentication="name">UserID</span>
-            <a id="loginlink" th:href="@{/loggedin}" href="#">Login</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/authentication/logout}" href="#">Logout <span sec:authentication="name">UserID</span></a>
+            <a sec:authorize="isAnonymous()" id="loginlink" th:href="@{/authentication/login}" href="#">Login</a>
             <a id="printlink" title="Print this page" href="javascript:this.print();">
               <span>Print</span>
             </a>
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode">
               <span>Switch to/from full screen mode</span>
             </a>
-            <a id="acronymlink" href="/acronyms" title="Look up acronyms">
+            <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms">
               <span>Acronyms</span>
             </a>
             <a id="rsslink" type="application/rss+xml" href="http://www.eionet.europa.eu/announcements.rdf" title="Eionet headlines as RSS">
@@ -138,8 +138,7 @@ of the art customer service.
     <!-- container -->
     <div id="pagefoot" th:fragment="footerFragment">
       <p>
-Document last modified
-2009/04/03.
+Document last modified 2015/04/03.
 </p>
       <p><a href="/disclaimer">Disclaimer</a>.
 Copyright: <a rel="license" href="http://creativecommons.org/licenses/by/2.5/dk/deed.en_GB" title="Creative Commons Attribution License"><img alt="Creative Commons Attribution License" src="http://i.creativecommons.org/l/by/2.5/dk/80x15.png"/></a>
