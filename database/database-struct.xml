@@ -25,6 +25,10 @@
       <column name="uploader" type="varchar(40)">
         <constraints nullable="false"/>
       </column>
+      <column name="contenttype" type="varchar(80)"/>
+      <column name="filesize" type="bigint">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
     <modifySql dbms="mysql">
       <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>

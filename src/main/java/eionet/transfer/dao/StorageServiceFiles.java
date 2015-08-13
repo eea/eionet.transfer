@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class StorageServiceFiles implements StorageService {
 
-    //@Autowired
     private String dirFolder;
 
     public void setDirFolder(String dirFolder) {
@@ -28,12 +27,13 @@ public class StorageServiceFiles implements StorageService {
     }
 
 
-    /**
-     * Get an open stream to the stored object.
-     */
-    //InputStream getById(String id);
+    @Override
+    public InputStream getById(String id) {
+        return null;
+    }
 
     @Override
     public void deleteById(String id) {
+        //Stub
     }
 }

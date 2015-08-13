@@ -14,8 +14,12 @@ public interface StorageService {
     /**
      * Get an open stream to the stored object.
      */
-    //InputStream getById(String id);
+    InputStream getById(String id);
 
-    //Delete
+    /**
+     * Delete a file.
+     *
+     * @param id - unique identifier for the file.
+     */
     void deleteById(String id);
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 /**
@@ -39,11 +40,14 @@ public class FileUploadController {
     } 
 
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST) 
-    public String importFile(@RequestParam("file") MultipartFile myFile, @RequestParam("fileTTL") int fileTTL) throws IOException { 
+    public String importFile(@RequestParam("file") MultipartFile myFile,
+                        @RequestParam("fileTTL") int fileTTL,
+                        final RedirectAttributes redirectAttributes) throws IOException { 
         String pageTitle = "Upload file";
 
         String dirFolder = System.getProperty("files.folder", "/var/tmp");
         String uuidName = UUID.randomUUID().toString();
+        redirectAttributes.addFlashAttribute("uuid", uuidName);
         long now = System.currentTimeMillis();
         Date expirationDate = new Date(now + fileTTL * 3600L * 1000L);
 

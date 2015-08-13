@@ -8,6 +8,8 @@ public class Upload {
     private Date expires;
     private String filename;
     private String uploader;
+    private String contentType;
+    private long fileSize;
     
 
     public Upload(String id, String filename) {
@@ -41,6 +43,22 @@ public class Upload {
 
     public void setUploader(String uploader) {
         this.uploader = uploader;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public long getSize() {
+        return fileSize;
+    }
+
+    public void setSize(final long size) {
+        this.fileSize = size;
     }
 
 }
