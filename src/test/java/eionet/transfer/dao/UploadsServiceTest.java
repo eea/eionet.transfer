@@ -27,13 +27,17 @@ public class UploadsServiceTest {
         uploadsService.deleteAll();
 
         //Run some tests for JDBC CRUD operations
-        Upload doc = new Upload("b1dd4c8e-18b4-445c-bc75-d373dad22c40", "testfile.txt");
+        Upload doc = new Upload();
+        doc.setId("b1dd4c8e-18b4-445c-bc75-d373dad22c40");
+        doc.setFilename("testfile.txt");
         Date expirationDate = new Date(stringDatetimeToTimestamp("2013-05-01 19:00:01"));
         doc.setExpires(expirationDate);
         doc.setUploader("testperson");
         uploadsService.save(doc);
 
-        Upload doc2 = new Upload("62c8a681-bf6f-4d88-878c-a2e92ea310e1", "testfile1.txt");
+        Upload doc2 = new Upload();
+        doc2.setId("62c8a681-bf6f-4d88-878c-a2e92ea310e1");
+        doc2.setFilename("testfile1.txt");
         doc2.setExpires(expirationDate);
         doc2.setUploader("testperson");
         uploadsService.save(doc2);

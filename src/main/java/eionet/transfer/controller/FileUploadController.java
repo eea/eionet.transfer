@@ -63,7 +63,9 @@ public class FileUploadController {
 
         File destination = new File(dirFolder, uuidName);
         myFile.transferTo(destination);
-        Upload rec = new Upload(uuidName, myFile.getName());
+        Upload rec = new Upload();
+        rec.setId(uuidName);
+        rec.setFilename(myFile.getName());
         rec.setExpires(expirationDate);
         String userName = getUserName();
         rec.setUploader(userName);

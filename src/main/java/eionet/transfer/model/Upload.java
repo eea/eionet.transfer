@@ -11,14 +11,12 @@ public class Upload {
     private String contentType;
     private long fileSize;
     
-
-    public Upload(String id, String filename) {
-        this.id = id;
-        this.filename = filename;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Date getExpires() {

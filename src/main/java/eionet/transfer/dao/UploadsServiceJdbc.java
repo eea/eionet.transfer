@@ -1,5 +1,6 @@
 package eionet.transfer.dao;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class UploadsServiceJdbc implements UploadsService {
 
     @Override
     public Upload getById(String id) {
-        String query = "SELECT id, expires, filename, uploader FROM uploads WHERE id = ?";
+        String query = "SELECT id, expires, filename, uploader, contenttype, filesize FROM uploads WHERE id = ?";
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         //using RowMapper anonymous class, we can create a separate RowMapper for reuse
@@ -41,7 +42,13 @@ public class UploadsServiceJdbc implements UploadsService {
             @Override
             public Upload mapRow(ResultSet rs, int rowNum)
                     throws SQLException {
-                Upload uploadRec = new Upload(rs.getString("id"), rs.getString("filename"));
+                Upload uploadRec = new Upload();
+                uploadRec.setId(rs.getString("id"));
+                uploadRec.setFilename(rs.getString("filename"));
+                uploadRec.setExpires(rs.getDate("expires"));
+                uploadRec.setUploader(rs.getString("uploader"));
+                uploadRec.setContentType(rs.getString("contenttype"));
+                uploadRec.setSize(rs.getLong("filesize"));
                 return uploadRec;
             }});
 
@@ -50,14 +57,21 @@ public class UploadsServiceJdbc implements UploadsService {
 
     @Override
     public List<Upload> getAll() {
-        String query = "SELECT id, expires, filename, uploader FROM uploads";
+        String query = "SELECT id, expires, filename, uploader, contenttype, filesize FROM uploads";
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         List<Upload> uploadList = new ArrayList<Upload>();
 
         List<Map<String, Object>> uploadRows = jdbcTemplate.queryForList(query);
 
-        for(Map<String, Object> uploadRow : uploadRows){
-            Upload uploadRec = new Upload(String.valueOf(uploadRow.get("id")), String.valueOf(uploadRow.get("filename")));
+        for (Map<String, Object> row : uploadRows) {
+            Upload uploadRec = new Upload();
+            uploadRec.setId((String) (row.get("id")));
+            uploadRec.setFilename((String) (row.get("filename")));
+            uploadRec.setExpires((Date) (row.get("expires")));
+            uploadRec.setUploader((String) (row.get("uploader")));
+            uploadRec.setContentType((String) (row.get("contenttype")));
+            uploadRec.setSize((Long) (row.get("filesize")));
             uploadList.add(uploadRec);
         }
         return uploadList;
