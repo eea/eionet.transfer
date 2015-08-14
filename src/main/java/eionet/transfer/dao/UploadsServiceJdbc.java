@@ -23,9 +23,11 @@ public class UploadsServiceJdbc implements UploadsService {
 
     @Override
     public void save(Upload upload) {
-        String query = "INSERT INTO uploads (id, expires, filename, uploader) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO uploads (id, expires, filename, uploader, contenttype, filesize) VALUES (?, ?, ?, ?, ?, ?)";
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update(query, upload.getId(), upload.getExpires(), upload.getFilename(), upload.getUploader());
+        jdbcTemplate.update(query, upload.getId(), upload.getExpires(),
+            upload.getFilename(), upload.getUploader(),
+            upload.getContentType(), upload.getSize());
     }
 
     @Override

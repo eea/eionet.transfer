@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * See http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
@@ -39,6 +40,15 @@ public class FileUploadController {
         return "fileupload"; 
     } 
 
+    private String getUserName() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails)principal).getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
+
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST) 
     public String importFile(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
@@ -55,7 +65,8 @@ public class FileUploadController {
         myFile.transferTo(destination);
         Upload rec = new Upload(uuidName, myFile.getName());
         rec.setExpires(expirationDate);
-        rec.setUploader("FIXME");
+        String userName = getUserName();
+        rec.setUploader(userName);
         uploadsService.save(rec);
         // Redirect to a successful upload page 
         return "redirect:uploadSuccess"; 
