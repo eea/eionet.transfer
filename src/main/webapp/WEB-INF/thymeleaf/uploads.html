@@ -14,8 +14,10 @@
           <table>
             <thead>
               <tr>
-                <th> UUID </th>
-                <th> File name</th>
+                <th>Identifier</th>
+                <th>File name</th>
+                <th>Expires</th>
+                <th>Size</th>
               </tr>
             </thead>
             <tbody th:remove="all-but-first">
@@ -23,10 +25,13 @@
                 <td th:text="${uploads.id}">99999</td>
                 <td th:text="${uploads.filename}">Long realistic file name</td>
                 <td th:text="${uploads.expires}">2014-11-29</td>
+                <td th:text="${uploads.size}">8932893</td>
               </tr>
               <tr>
-                <td><a href="#">88888</a></td>
-                <td>Mom &amp; Pop's little tannery</td>
+                <td>88888</td>
+                <td>Filename.txt</td>
+                <td>2015-05-29</td>
+                <td>2992929</td>
               </tr>
             </tbody>
           </table>

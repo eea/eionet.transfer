@@ -29,7 +29,7 @@ public class StorageServiceTest {
 
         String newId = storageService.save(file);
         assertNotNull(newId);
-        System.out.println(newId);
+        //System.out.println(newId);
 
         //Read
         //InputStream infp = storageService.getById(newId);

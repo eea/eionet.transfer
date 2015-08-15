@@ -21,12 +21,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 /**
- * Test the simple doc controller.
+ * Test the file operations.
  *
  * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.BUILD-SNAPSHOT/reference/htmlsingle/#spring-mvc-test-framework">MVC testing</a>
  * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.RC2/api/org/springframework/test/web/servlet/ResultActions.html">Result Actions</a>
  */
-public class FileUploadControllerTest {
+public class FileOpsControllerTest {
 
     @Autowired
     private WebApplicationContext wac;

@@ -16,8 +16,15 @@ public interface UploadsService {
     //Update
     //void update(Upload upload);
 
-    //Delete
-    //void deleteById(String id);
+    /**
+     * Delete file by Id.
+     */
+    void deleteById(String id);
+
+    /**
+     * Delete all files where the expiration date has passed.
+     */
+    void deleteExpired();
 
     //Get All
     List<Upload> getAll();

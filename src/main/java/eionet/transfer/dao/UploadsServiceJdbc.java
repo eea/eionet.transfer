@@ -78,6 +78,18 @@ public class UploadsServiceJdbc implements UploadsService {
     }
 
     @Override
+    public void deleteById(String id) {
+        String query = "DELETE FROM uploads WHERE id = ?";
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(query, id);
+    }
+
+    @Override
+    public void deleteExpired() {
+        // Stubbed
+    }
+
+    @Override
     public void deleteAll() {
         String query = "DELETE FROM uploads";
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
