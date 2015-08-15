@@ -1,5 +1,8 @@
 package eionet.transfer.dao;
  
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,11 +15,17 @@ import org.springframework.mock.web.MockMultipartFile;
 import eionet.transfer.dao.StorageServiceFiles;
 import org.junit.Test;
 import org.junit.Ignore;
-import static org.junit.Assert.assertTrue;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
- 
+import static org.junit.Assert.assertTrue;
+
 public class StorageServiceTest {
- 
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @Test
     public void simpleTest() throws Exception {
         //Get the Spring Context
@@ -25,16 +34,24 @@ public class StorageServiceTest {
         //Get the StorageService Bean from the context.
         StorageService storageService = ctx.getBean("storageService", StorageService.class);
 
-        MultipartFile file = new MockMultipartFile("Testfile.txt", "ABCDEF".getBytes());
+        String testData = "ABCDEF";
+        MultipartFile file = new MockMultipartFile("Testfile.txt", testData.getBytes());
 
         String newId = storageService.save(file);
         assertNotNull(newId);
-        //System.out.println(newId);
 
-        //Read
-        //InputStream infp = storageService.getById(newId);
+        byte[] resultBuf = new byte[100];
+
+        InputStream infp = storageService.getById(newId);
+        infp.read(resultBuf);
+        infp.close();
+        assertEquals((byte) 0, resultBuf[6]);
+        assertEquals(new String(resultBuf, 0, 6, Charset.forName("US-ASCII")), testData);
+        storageService.deleteById(newId);
+
+        exception.expect(IOException.class);
+        storageService.deleteById(newId);
          
-        //Close Spring Context
-        ctx.close();
+        ctx.close(); //Close Spring Context
     }
 }

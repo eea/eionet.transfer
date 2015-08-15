@@ -18,13 +18,7 @@ The site is only open to uploaders with an Eionet account.
 When you have uploaded your file it will show you a URL, which you can email to the intended recipients. The file will only be stored on the website for a limited number of days.
 </p>
 <ul>
-<li><a href="fileupload">Upload file</a></li>
-<li th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-  This content is only shown to administrators.
-</li>
-<li sec:authorize-url="/uploads">
-    This will only be displayed if authenticated user can call the "/uploads" URL.
-</li>
+<li><a href="fileupload">Transfer file</a></li>
 </ul>
       </div>
     </div>

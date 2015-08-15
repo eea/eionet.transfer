@@ -1,6 +1,7 @@
 package eionet.transfer.dao;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -18,7 +19,6 @@ public class StorageServiceFiles implements StorageService {
 
     @Override
     public String save(MultipartFile myFile) throws IOException {
-        //String dirFolder = System.getProperty("files.folder", "/var/tmp");
         assert dirFolder != null;
         String uuidName = UUID.randomUUID().toString();
         File destination = new File(dirFolder, uuidName);
@@ -28,12 +28,16 @@ public class StorageServiceFiles implements StorageService {
 
 
     @Override
-    public InputStream getById(String id) {
-        return null;
+    public InputStream getById(String uuidName) throws IOException {
+        File location = new File(dirFolder, uuidName);
+        return new FileInputStream(location);
     }
 
     @Override
-    public void deleteById(String id) {
-        //Stub
+    public void deleteById(String uuidName) throws IOException {
+        File location = new File(dirFolder, uuidName);
+        if (!location.delete()) {
+            throw new IOException("Nothing to delete");
+        }
     }
 }

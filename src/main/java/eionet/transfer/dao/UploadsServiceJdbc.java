@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 public class UploadsServiceJdbc implements UploadsService {
 
+    @Autowired
+    private StorageService storageService;
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
