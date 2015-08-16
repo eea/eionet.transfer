@@ -19,6 +19,7 @@
                 <th>Expires</th>
                 <th>Size</th>
                 <th>Uploader</th>
+                <th>Operation</th>
               </tr>
             </thead>
             <tbody th:remove="all-but-first">
@@ -26,8 +27,11 @@
                 <td th:text="${uploads.id}">99999</td>
                 <td th:text="${uploads.filename}">Long realistic file name</td>
                 <td th:text="${uploads.expires}">2014-11-29</td>
-                <td th:text="${uploads.size}">8932893</td>
+                <td th:text="${uploads.humaneSize}">8932893</td>
                 <td th:text="${uploads.uploader}">uploader</td>
+                <td><a th:href="@{'/download/'+${uploads.id}}" href="#">Download</a> |
+                    <a th:href="@{'/delete/'+${uploads.id}}" href="#">Delete</a>
+                </td>
               </tr>
               <tr>
                 <td>88888</td>

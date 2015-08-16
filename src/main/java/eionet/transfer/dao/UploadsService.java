@@ -1,6 +1,7 @@
 package eionet.transfer.dao;
 
 import java.util.List;
+import java.sql.Date;
 
 import eionet.transfer.model.Upload;
 
@@ -22,9 +23,14 @@ public interface UploadsService {
     void deleteById(String id);
 
     /**
-     * Delete all files where the expiration date has passed.
+     * Get a list of all files where the expiration date has passed.
      */
-    void deleteExpired();
+    List<String> getExpired();
+
+    /**
+     * Get a list of all files where the expiration date has passed.
+     */
+    List<String> getExpired(Date expirationDate);
 
     //Get All
     List<Upload> getAll();

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.File;
 import java.sql.Date;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,9 @@ public class FileOpsController {
         return "fileupload"; 
     } 
 
+    /**
+     * Helper method to get authenticated userid.
+     */
     private String getUserName() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -66,8 +70,6 @@ public class FileOpsController {
         long now = System.currentTimeMillis();
         Date expirationDate = new Date(now + fileTTL * 3600L * 1000L);
 
-        //File destination = new File(dirFolder, uuidName);
-        //myFile.transferTo(destination);
         Upload rec = new Upload();
         rec.setId(uuidName);
         rec.setFilename(myFile.getOriginalFilename());
@@ -82,9 +84,15 @@ public class FileOpsController {
     } 
 
     @RequestMapping(value = "/uploadSuccess")
-    public String uploadResult(Model model) {
+    public String uploadResult(Model model, HttpServletRequest request) {
         String pageTitle = "File uploaded";
         BreadCrumbs.set(model, pageTitle);
+        StringBuffer requestUrl = request.getRequestURL();
+        model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/uploadSuccess".length()));
+        //if (model.containsAttribute("uuid")) {
+        //    String uuid = (String) model.asMap().get("uuid");
+        //    model.addAttribute("uuid", uuid); // Make it persistent for browser refresh
+        //}
         return "uploadSuccess";
     }
 
@@ -119,7 +127,11 @@ public class FileOpsController {
     public String deleteFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
         Upload uploadRec = uploadsService.getById(fileId);
-        storageService.deleteById(fileId);
+        uploadsService.deleteById(fileId);
+        try {
+            storageService.deleteById(fileId);
+        } catch (IOException ex) {
+        }
         return "deleteSuccess"; 
     }
 }

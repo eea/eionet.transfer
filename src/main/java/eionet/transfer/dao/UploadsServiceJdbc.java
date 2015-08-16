@@ -88,8 +88,24 @@ public class UploadsServiceJdbc implements UploadsService {
     }
 
     @Override
-    public void deleteExpired() {
-        // Stubbed
+    public List<String> getExpired() {
+        Date now = new Date(System.currentTimeMillis());
+        return getExpired(now);
+    }
+
+    @Override
+    public List<String> getExpired(Date expireDate) {
+        String query = "SELECT id FROM uploads WHERE expires < ?";
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        List<String> uploadList = new ArrayList<String>();
+
+        Object[] parameters = new Object[] {expireDate};
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(query, parameters);
+        for (Map<String, Object> row : rows) {
+            String uuidName = new String((String) row.get("id"));
+            uploadList.add(uuidName);
+        }
+        return uploadList;
     }
 
     @Override

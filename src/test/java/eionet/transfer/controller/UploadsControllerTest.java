@@ -48,10 +48,10 @@ public class UploadsControllerTest {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        databaseTester = new DataSourceDatabaseTester(dataSource);
-        IDataSet dataSet = new FlatXmlDataSetBuilder().build(getClass().getClassLoader().getResourceAsStream("seed-uploads.xml"));
-        databaseTester.setDataSet(dataSet);
-        databaseTester.onSetup();
+        //databaseTester = new DataSourceDatabaseTester(dataSource);
+        //IDataSet dataSet = new FlatXmlDataSetBuilder().build(getClass().getClassLoader().getResourceAsStream("seed-uploads.xml"));
+        //databaseTester.setDataSet(dataSet);
+        //databaseTester.onSetup();
     }
 
     @Test

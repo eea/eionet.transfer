@@ -1,5 +1,6 @@
 package eionet.transfer.model;
 
+import eionet.transfer.util.Humane;
 import java.sql.Date;
 
 public class Upload {
@@ -59,4 +60,7 @@ public class Upload {
         this.fileSize = size;
     }
 
+    public String getHumaneSize() {
+        return Humane.humaneSize(fileSize);
+    }
 }
