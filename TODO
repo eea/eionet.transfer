@@ -1,11 +1,13 @@
 To be implemented:
+* Expiration of files
 * Unit tests on database integration
 * HTML5 (or JQuery) upload progress bar, see http://www.matlus.com/html5-file-upload-with-progress/
 * Graceful recovery if there is not enough space for storage
+* Graceful message if user tries to use delete link a second time
 * HTML file drag and drop
 * Table for authorisations
 * CAS login
 * Check for thread safety
 * Nicer user interface
 * Must be able to handle 5 GB uploads
-* The embedded h2 server doesn't like war redeployments. Perhaps start up the TCP server? See http://www.h2database.com/html/tutorial.html#spring
+* (FIXED) The embedded h2 server doesn't like war redeployments. Perhaps start up the TCP server? See http://www.h2database.com/html/tutorial.html#spring

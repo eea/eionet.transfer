@@ -10,7 +10,7 @@
                 class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
                 <property name="driverClassName" value="org.h2.Driver" />
-                <property name="url" value="jdbc:h2:file:transfertest" />
+                <property name="url" value="jdbc:h2:file:target/transfertest" />
                 <property name="username" value="dbuser" />
                 <property name="password" value="password" />
         </bean>

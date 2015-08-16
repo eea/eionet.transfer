@@ -32,7 +32,9 @@ public interface UploadsService {
      */
     List<String> getExpired(Date expirationDate);
 
-    //Get All
+    /**
+     * Get all records.
+     */
     List<Upload> getAll();
 
     void deleteAll();

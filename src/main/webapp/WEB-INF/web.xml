@@ -4,14 +4,8 @@
     xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     id="WebApp_ID" version="2.5">
-    <display-name>E-PRTR 2 Demo</display-name>
+    <display-name>Web Transfer</display-name>
 
-<!--
-    <context-param>
-        <param-name>spring.profiles.active</param-name>
-        <param-value>tiles3</param-value>
-    </context-param>
--->
     <servlet>
         <servlet-name>DispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -24,9 +18,8 @@
         <multipart-config>
         <!--
             <max-file-size>10485760</max-file-size>
-            <max-request-size>20971520</max-request-size>
-            <location>/var/tmp</location>
-         -->
+            <max-request-size>20971520</max-request-size> -->
+            <!-- <location>/var/tmp</location> --> <!-- Set this to a location on the same filesystem as the permanent location -->
             <file-size-threshold>5242880</file-size-threshold>
         </multipart-config>
         <load-on-startup>1</load-on-startup>
