@@ -105,7 +105,6 @@ public class FileOpsController {
 
     /**
      * Download a file.
-     * TODO: Clean up old files.
      */
     @RequestMapping(value = "/download/{file_name}", method = RequestMethod.GET)
     public void getFile(

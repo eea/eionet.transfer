@@ -3,16 +3,20 @@ package eionet.transfer.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.security.Principal;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,5 +48,15 @@ public class FileOpsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("breadcrumbs"))
                 .andExpect(view().name("fileupload"));
+    }
+
+    @Ignore @Test
+    public void testUpload() throws Exception {
+        mockMvc.perform(fileUpload("/fileupload")//.principal("admin")
+                .file("file", "ABCDEF".getBytes("UTF-8"))
+                .param("fileTTL", "320"))
+                .andExpect(status().isOk())
+                .andExpect(redirectedUrl("/uploadSuccess"))
+                .andExpect(flash().attributeCount(1));
     }
 }
