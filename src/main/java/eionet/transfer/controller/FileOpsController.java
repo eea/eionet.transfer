@@ -7,7 +7,8 @@ import eionet.transfer.model.Upload;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.File;
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +58,9 @@ public class FileOpsController {
         }
     }
 
+    /**
+     * Upload file for transfer.
+     */
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST) 
     public String importFile(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
@@ -83,6 +87,9 @@ public class FileOpsController {
         return "redirect:uploadSuccess"; 
     } 
 
+    /**
+     * Page to show upload success.
+     */
     @RequestMapping(value = "/uploadSuccess")
     public String uploadResult(Model model, HttpServletRequest request) {
         String pageTitle = "File uploaded";
@@ -97,30 +104,44 @@ public class FileOpsController {
     }
 
     /**
-     * TODO: Check that it is before the purge date.
-     *       Clean up old files.
+     * Download a file.
+     * TODO: Clean up old files.
      */
     @RequestMapping(value = "/download/{file_name}", method = RequestMethod.GET)
     public void getFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
         Upload uploadRec = uploadsService.getById(fileId);
+        Date today = new Date(System.currentTimeMillis());
+        if (today.after(uploadRec.getExpires())) {
+            throw new IOException("File not found");
+        }
         InputStream is = null;
+        is = storageService.getById(fileId);
+        response.setContentType("application/octet-stream");
+        //response.setContentLength(uploadRec.getSize()); // Too small - max 2.1 GB.
+        response.setHeader("Content-Length", Long.toString(uploadRec.getSize()));
+        response.setHeader("Content-Disposition", "attachment; filename=" + uploadRec.getFilename());
+
+        org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+        response.flushBuffer();
+        is.close();
+        deleteExpired();
+    }
+
+    /**
+     * Delete all expired items from the database.
+     */
+    private void deleteExpired() {
         try {
-          is = storageService.getById(fileId);
-          response.setContentType("application/octet-stream");
-          //response.setContentLength(uploadRec.getSize()); // Too small - max 2.1 GB.
-          response.setHeader("Content-Length", Long.toString(uploadRec.getSize()));
-          response.setHeader("Content-Disposition", "attachment; filename=" + uploadRec.getFilename());
-          // copy it to response's OutputStream
-          org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
-          response.flushBuffer();
+            List<String> expiredObjects = uploadsService.getExpired();
+            for (String fileId : expiredObjects) {
+                uploadsService.deleteById(fileId);
+                storageService.deleteById(fileId);
+            }
         } catch (IOException ex) {
-          //log.info("Error writing file to output stream. Filename was '{}'", fileId, ex);
-          throw new RuntimeException("IOError writing file to output stream");
+            // Ignore errors here
         }
-        if (is != null) {
-            is.close();
-        }
+
     }
 
     @RequestMapping(value = "/delete/{file_name}", method = RequestMethod.GET)
@@ -128,10 +149,7 @@ public class FileOpsController {
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
         Upload uploadRec = uploadsService.getById(fileId);
         uploadsService.deleteById(fileId);
-        try {
-            storageService.deleteById(fileId);
-        } catch (IOException ex) {
-        }
+        storageService.deleteById(fileId);
         return "deleteSuccess"; 
     }
 }

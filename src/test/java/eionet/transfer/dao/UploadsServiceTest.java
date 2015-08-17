@@ -1,6 +1,6 @@
 package eionet.transfer.dao;
  
-import java.sql.Date;
+import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -8,52 +8,79 @@ import java.util.List;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
  
 import eionet.transfer.model.Upload;
-import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
- 
+import static org.junit.Assert.assertTrue;
+
 // See http://www.journaldev.com/2593/spring-jdbc-and-jdbctemplate-crud-with-datasource-example-tutorial
 public class UploadsServiceTest {
  
-    @Test
-    public void simpleTest() throws Exception {
+    private UploadsService uploadsService;
+
+    private ClassPathXmlApplicationContext ctx;
+
+    @Before
+    public void loadContext() {
         //Get the Spring Context
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-dbtest-config.xml");
+        ctx = new ClassPathXmlApplicationContext("spring-dbtest-config.xml");
          
         //Get the UploadsService Bean from the context.
-        UploadsService uploadsService = ctx.getBean("uploadsService", UploadsService.class);
+        uploadsService = ctx.getBean("uploadsService", UploadsService.class);
 
+        //Start from an empty database.
         uploadsService.deleteAll();
+    }
 
-        //Run some tests for JDBC CRUD operations
-        Upload doc = new Upload();
-        doc.setId("b1dd4c8e-18b4-445c-bc75-d373dad22c40");
-        doc.setFilename("testfile.txt");
-        Date expirationDate = new Date(stringDatetimeToTimestamp("2013-05-01 19:00:01"));
-        doc.setExpires(expirationDate);
-        doc.setUploader("testperson");
-        uploadsService.save(doc);
-
-        Upload doc2 = new Upload();
-        doc2.setId("62c8a681-bf6f-4d88-878c-a2e92ea310e1");
-        doc2.setFilename("testfile1.txt");
-        doc2.setExpires(expirationDate);
-        doc2.setUploader("testperson");
-        uploadsService.save(doc2);
-
-        //Read
-        Upload doc1 = uploadsService.getById("b1dd4c8e-18b4-445c-bc75-d373dad22c40");
-        assertNotNull(doc1);
-         
-        //Get All
-        List<Upload> docList = uploadsService.getAll();
-        assertTrue(docList.size() > 0);
-
+    @After
+    public void closeContext() {
         //Close Spring Context
         ctx.close();
     }
+
+    @Test
+    public void simpleTest() throws Exception {
+
+        String uuid1 = "b1dd4c8e-18b4-445c-bc75-d373dad22c40";
+        createRecord(uuid1, "2013-05-01 19:00:01");
+        String uuid2 = "62c8a681-bf6f-4d88-878c-a2e92ea310e1";
+        createRecord(uuid2, "2015-01-01 09:00:01");
+
+        //Read
+        Upload doc1 = uploadsService.getById(uuid1);
+        assertNotNull(doc1);
+        assertEquals(uuid1, doc1.getId());
+         
+        //Get All
+        List<Upload> docList = uploadsService.getAll();
+        assertEquals(2, docList.size());
+
+        //Get expired as of now.
+        List<String> expiredList = uploadsService.getExpired();
+        assertEquals(2, expiredList.size());
+
+        // Get expired as of Jan 2014.
+        Date expirationDate3 = new Date(stringDatetimeToTimestamp("2014-01-01 09:00:01"));
+        List<String> expiredList2 = uploadsService.getExpired(expirationDate3);
+        assertEquals(1, expiredList2.size());
+
+        String expiredId1 = expiredList.get(0);
+        assertEquals(uuid1, expiredId1);
+    }
  
+    private void createRecord(String uuid, String expiration) throws Exception {
+        Upload doc = new Upload();
+        doc.setId(uuid);
+        doc.setFilename("testfile.txt");
+        Date expirationDate = new Date(stringDatetimeToTimestamp(expiration));
+        doc.setExpires(expirationDate);
+        doc.setUploader("testperson");
+        uploadsService.save(doc);
+    }
+
     /**
      * Mock function that converts a datetime value in string format into a timestamp
      * value, in the same way that the MySql jdbc driver does.

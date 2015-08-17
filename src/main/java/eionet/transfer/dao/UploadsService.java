@@ -1,21 +1,24 @@
 package eionet.transfer.dao;
 
 import java.util.List;
-import java.sql.Date;
+import java.util.Date;
 
 import eionet.transfer.model.Upload;
 
-//CRUD operations
+/**
+ * Data for uploaded files.
+ */
 public interface UploadsService {
 
-    //Create
+    /**
+     * Save the meta data for an upload.
+     */
     void save(Upload upload);
 
-    //Read
+    /**
+     * Fetch the meta data for one upload.
+     */
     Upload getById(String id);
-
-    //Update
-    //void update(Upload upload);
 
     /**
      * Delete file by Id.
@@ -37,5 +40,8 @@ public interface UploadsService {
      */
     List<Upload> getAll();
 
+    /**
+     * Delete all metadata for all uploads. Mainly used for testing.
+     */
     void deleteAll();
 }

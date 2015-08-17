@@ -18,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,10 +48,10 @@ public class StorageServiceTest {
         infp.close();
         assertEquals((byte) 0, resultBuf[6]);
         assertEquals(new String(resultBuf, 0, 6, Charset.forName("US-ASCII")), testData);
-        storageService.deleteById(newId);
+        assertTrue(storageService.deleteById(newId));
 
-        exception.expect(IOException.class);
-        storageService.deleteById(newId);
+        //exception.expect(IOException.class);
+        assertFalse(storageService.deleteById(newId));
          
         ctx.close(); //Close Spring Context
     }

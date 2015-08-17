@@ -34,10 +34,8 @@ public class StorageServiceFiles implements StorageService {
     }
 
     @Override
-    public void deleteById(String uuidName) throws IOException {
+    public boolean deleteById(String uuidName) throws IOException {
         File location = new File(dirFolder, uuidName);
-        if (!location.delete()) {
-            throw new IOException("Nothing to delete");
-        }
+        return location.delete();
     }
 }

@@ -17,9 +17,9 @@ public interface StorageService {
     InputStream getById(String id) throws IOException;
 
     /**
-     * Delete a file.
+     * Delete a file in the storage service. If the file does not exist, then return false.
      *
      * @param id - unique identifier for the file.
      */
-    void deleteById(String id) throws IOException;
+    boolean deleteById(String id) throws IOException;
 }
