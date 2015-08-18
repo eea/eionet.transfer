@@ -6,10 +6,8 @@ import eionet.transfer.dao.UploadsService;
 import eionet.transfer.model.Upload;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,7 +144,6 @@ public class FileOpsController {
     @RequestMapping(value = "/delete/{file_name}", method = RequestMethod.GET)
     public String deleteFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
-        Upload uploadRec = uploadsService.getById(fileId);
         uploadsService.deleteById(fileId);
         storageService.deleteById(fileId);
         return "deleteSuccess"; 
