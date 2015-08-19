@@ -9,14 +9,12 @@ import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,7 +50,7 @@ public class FileOpsControllerTest {
 
     @Ignore @Test
     public void testUpload() throws Exception {
-        mockMvc.perform(fileUpload("/fileupload")//.principal("admin")
+        mockMvc.perform(fileUpload("/fileupload")
                 .file("file", "ABCDEF".getBytes("UTF-8"))
                 .param("fileTTL", "320"))
                 .andExpect(status().isOk())

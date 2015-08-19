@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body>
+    <div id="container">
+      <div th:include="layout :: bannerFragment">
+      </div>
+      <div id="workarea">
+
+<h1>Modify user</h1>
+<div id="operations">
+    <ul>
+        <li><a href="view_user.html" th:href="@{/users/view}" >Back to users</a></li>
+    </ul>
+</div>
+<form action="edit" th:action="@{/users/edit}" method="post">
+    <table class="datatable">
+        <tr>
+            <th scope="row"><label for="userName">Username</label></th>
+            <td><input id="userName" name="userName" value="john" th:value="${userName}" type="text" readonly="readonly"/></td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="roles">Select user role</label></th>
+            <td>
+                <div th:each="validRole : ${allRoles}">
+                    <input type="radio" name="role" value="ADMIN" id="roleadmin"
+                    th:id="|role_${validRole}|"
+                    th:value="${validRole}"
+                    th:checked="${#lists.contains(role, validRole)}" />
+                    <label for="roleadmin" th:for="|role_${validRole}|" th:text="${validRole}">ADMIN</label>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Edit user"/>
+</form>
+      </div>
+    </div>
+    <!-- container -->
+    <div id="pagefoot" th:include="layout :: footerFragment">
+    Footer
+    </div>
+  </body>
+</html>

@@ -47,4 +47,22 @@
     </modifySql>
   </changeSet>
 
+  <changeSet id="rev-3" author="roug">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="users"/>
+      </not>
+    </preConditions>
+    <createTable tableName="users">
+      <column name="username" type="varchar(40)">
+        <constraints unique="true"/>
+      </column>
+      <column name="password" type="varchar(40)"/>
+      <column name="enabled" type="boolean"/>
+    </createTable>
+    <modifySql dbms="mysql">
+      <append value=" ENGINE=InnoDB DEFAULT CHARSET=utf8"/>
+    </modifySql>
+  </changeSet>
+
 </databaseChangeLog>

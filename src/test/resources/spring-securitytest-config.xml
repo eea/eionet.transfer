@@ -10,6 +10,7 @@
         <http auto-config="true">
             <intercept-url pattern="/fileupload" access="isAuthenticated()" />
             <intercept-url pattern="/uploads" access="hasRole('ROLE_ADMIN')" />
+            <intercept-url pattern="/users/**" access="hasRole('ADMIN')"/>
         </http>
 
         <authentication-manager>

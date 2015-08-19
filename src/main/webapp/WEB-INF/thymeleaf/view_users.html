@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:include="layout :: headerFragment">
+  </head>
+  <body>
+    <div id="container">
+      <div th:include="layout :: bannerFragment">
+      </div>
+      <div id="workarea">
+        <h1>Users - Roles</h1>
+
+<script type="text/javascript" src="js/jquery-1.10.2.min.js" th:src="@{/js/jquery-1.10.2.min.js}"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js" th:src="@{/js/jquery-ui-1.10.3.custom.min.js}"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.3.custom.min.css" th:href="@{/css/jquery-ui-1.10.3.custom.min.css}" />
+
+<input id="add-role" type="button" href="new_user.html" th:href="@{/users/new}" value="Add new User" />
+<table class="datatable">
+  <thead>
+    <tr>
+        <th>User</th>
+        <th>Roles</th>
+        <th>Edit User</th>
+        <th>Delete User</th>
+    </tr>
+  </thead>
+  <tbody th:remove="all-but-first">
+      <tr th:each="user : ${allUsers}">
+          <td th:text="${user.username}">freddy</td>
+          <td>
+           <span th:each="authority, loopStatus : ${user.authorities}">
+             <th:block th:text="${authority}">ROLE</th:block>
+             <th:block th:if="${not loopStatus.last}"> , </th:block>
+           </span>
+          </td>
+          <td>
+            <input class="edit-button" type="button" value="Edit" href="existing_user.html" th:href="@{/users//existing(userName=${user.username})}" />
+          </td>
+          <td>
+            <input class="delete-button" type="button" value="Delete" href="#" th:href="@{/users//delete(userName=${user.username})}" />
+          </td>
+      </tr>
+      <tr>
+        <td>helen</td>
+        <td>ADMIN, DEVELOPER</td>
+          <td>
+            <input class="edit-button" type="button" value="Edit" href="#" />
+          </td>
+          <td>
+            <input class="delete-button" type="button" value="Delete" href="#" />
+          </td>
+      </tr>
+  </tbody>
+</table>
+<script type="text/javascript">
+    (function(){
+        $('#add-role, .edit-button').click(function(){
+            window.location.assign($(this).attr("href"));
+        });
+        $('.delete-button').click(function(){
+            if (confirm("Are you sure you want to delete the user ?") == true) {
+                window.location.assign($(this).attr("href"));
+            }
+        });
+    })();
+</script>
+      </div>
+    </div>
+    <!-- container -->
+    <div id="pagefoot" th:include="layout :: footerFragment">
+    Footer
+    </div>
+  </body>
+</html>

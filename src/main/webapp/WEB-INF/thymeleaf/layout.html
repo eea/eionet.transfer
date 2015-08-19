@@ -4,7 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">Layout template</title>
     <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
-    <link href="../../style/app.css" th:href="@{/style/app.css}" rel="stylesheet"/>
+    <script type="text/javascript" src="../../js/jquery-1.10.2.min.js" th:src="@{/js/jquery-1.10.2.min.js}"></script>
+    <script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js" th:src="@{/js/jquery-ui-1.10.3.custom.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/jquery-ui-1.10.3.custom.min.css" th:href="@{/css/jquery-ui-1.10.3.custom.min.css}" />
   </head>
   <body>
     <div id="container">
@@ -94,7 +96,7 @@
               <li><a href="fileupload.html" th:href="@{/fileupload}">Transfer file</a></li>
               <li sec:authorize-url="/uploads"><a href="uploads.html" th:href="@{/uploads}">Current uploads</a></li>
               <li sec:authorize="hasRole('ROLE_ADMIN')">
-                 <a href="authorisations.html" th:ref="@{/authorisations}">User authorisations</a>
+                 <a href="view_users.html" th:href="@{/users/view}">User authorisations</a>
               </li>
             </ul>
           </div>

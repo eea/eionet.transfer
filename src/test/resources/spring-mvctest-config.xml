@@ -8,8 +8,8 @@
 
 
         <mvc:resources location="/images/" mapping="/images/**"/>
-        <mvc:resources location="/style/" mapping="/style/**"/>
-        <mvc:resources location="/scripts/" mapping="/scripts/**"/>
+        <mvc:resources location="/css/" mapping="/css/**"/>
+        <mvc:resources location="/js/" mapping="/js/**"/>
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
 	<context:component-scan base-package="eionet.transfer" />

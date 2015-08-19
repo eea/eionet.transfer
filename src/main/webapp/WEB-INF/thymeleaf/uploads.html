@@ -11,7 +11,7 @@
         <h1 th:text="${title}">Page title here</h1>
         <div th:if="${#lists.isEmpty(uploads)}">Table is empty.</div>
         <div th:if="${not #lists.isEmpty(uploads)}">
-          <table>
+          <table class="datatable">
             <thead>
               <tr>
                 <th>Identifier</th>
