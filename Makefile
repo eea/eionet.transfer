@@ -1,4 +1,4 @@
 
 deploy:
-	mvn clean install
+	mvn -Dmaven.test.skip=true clean install
 	cp target/transfer.war /var/lib/tomcat/webapps/ROOT.war

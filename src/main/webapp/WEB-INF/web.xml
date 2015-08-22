@@ -31,24 +31,31 @@
     </servlet-mapping>
 
     <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener
-        </listener-class>
+        <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
     <!-- Loads Spring Security config file -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            /WEB-INF/classes/spring-security.xml
+            /WEB-INF/classes/spring-security.xml /WEB-INF/classes/spring-db-config.xml
         </param-value>
+        <!--
+        <param-value>
+            /WEB-INF/classes/spring-security.xml /WEB-INF/classes/spring-db-config.xml
+        </param-value>
+        -->
     </context-param>
 
 
     <!-- Spring Security -->
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy
-        </filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
     <filter-mapping>

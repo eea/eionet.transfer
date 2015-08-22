@@ -15,8 +15,11 @@ public class SimplePageController {
 
     /**
      * Frontpage.
+
+     * @param model holder for model attributes
+     * @return view name
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/")
     public String frontpage(Model model) {
         // This is toplevel. No breadcrumbs.
         BreadCrumbs.set(model);
@@ -26,11 +29,34 @@ public class SimplePageController {
     /**
      * About.
      */
-    @RequestMapping(value = "/about", method = RequestMethod.GET)
+    @RequestMapping(value = "/about")
     public String about(Model model) {
         String title = "About";
         model.addAttribute("title", title);
         BreadCrumbs.set(model, title);
         return "about";
     }
+
+    /**
+     * Redirects to welcome page after login.
+     *
+     * @param model holder for model attributes
+     * @return view name
+     */
+    @RequestMapping(value = "/login")
+    public String login(Model model) {
+        return frontpage(model);
+    }
+
+    /**
+     * Shows page which allows to perform SingleSignOut.
+     *
+     * @return view name
+     */
+    @RequestMapping(value = "/logout")
+    public String logout() {
+        return "logout_all_apps";
+    }
+
+
 }

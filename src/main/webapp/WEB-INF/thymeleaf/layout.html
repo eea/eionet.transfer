@@ -19,8 +19,8 @@
             <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
           </div>
           <div id="righttools">
-            <a sec:authorize="isAuthenticated()" th:href="@{/authentication/logout}" href="#">Logout <span sec:authentication="name">UserID</span></a>
-            <a sec:authorize="isAnonymous()" id="loginlink" th:href="@{/authentication/login}" href="#">Login</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/logout}" href="#">Logout <span sec:authentication="name">UserID</span></a>
+            <a sec:authorize="isAnonymous()" id="loginlink" th:href="@{/login}" href="#">Login</a>
             <a id="printlink" title="Print this page" href="javascript:this.print();">
               <span>Print</span>
             </a>

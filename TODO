@@ -11,3 +11,7 @@ To be implemented:
 * Nicer user interface
 * Must be able to handle 5 GB uploads
 * (FIXED) The embedded h2 server doesn't like war redeployments. Perhaps start up the TCP server? See http://www.h2database.com/html/tutorial.html#spring
+
+* Document how to add the first ADMIN
+SQL> insert into users values ('roug','',true);
+SQL> insert into authorities values ('roug','ROLE_ADMIN');

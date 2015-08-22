@@ -13,24 +13,6 @@
         <property name="password" value="password" />
     </bean>
 
-    <bean id = "org.h2.tools.Server"
-                class="org.h2.tools.Server"
-                factory-method="createTcpServer"
-                init-method="start"
-                destroy-method="stop">
-        <constructor-arg value="-tcp,-tcpAllowOthers,-tcpPort,8043" />
-    </bean>
-    <!-- Run database refactorings at startup using Liquibase -->
-    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
-        <property name="dataSource" ref="dataSource" />
-        <property name="changeLog" value="classpath:database/database-struct.xml" />
-
-          <!-- contexts specifies the runtime contexts to use.  -->
-          <!--
-          <property name="contexts" value="demo, production" />
-          -->
-    </bean>
-
     <bean id="uploadsService" class="eionet.transfer.dao.UploadsServiceJdbc">
         <property name="dataSource" ref="dataSource" />
     </bean>
