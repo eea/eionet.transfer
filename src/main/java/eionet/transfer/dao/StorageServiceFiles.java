@@ -10,10 +10,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class StorageServiceFiles implements StorageService {
 
+    /**
+     * The directory location where to store the uploaded files.
+     */
     private String dirFolder;
 
     public void setDirFolder(String dirFolder) {
         this.dirFolder = dirFolder;
+    }
+
+    /**
+     * Experimental method to show the user the max upload size.
+     */
+    public long getFreeSpace() {
+        return new File(dirFolder).getFreeSpace();
     }
 
     @Override

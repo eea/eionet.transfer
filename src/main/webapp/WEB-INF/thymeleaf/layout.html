@@ -3,10 +3,16 @@
   <head th:fragment="headerFragment">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${title}">Layout template</title>
+    <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/handheld.css" media="handheld" />
     <link rel="stylesheet" type="text/css" href="http://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="../../css/jquery-ui-1.10.3.custom.min.css" th:href="@{/css/jquery-ui-1.10.3.custom.min.css}" />
     <script type="text/javascript" src="../../js/jquery-1.10.2.min.js" th:src="@{/js/jquery-1.10.2.min.js}"></script>
     <script type="text/javascript" src="../../js/jquery-ui-1.10.3.custom.min.js" th:src="@{/js/jquery-ui-1.10.3.custom.min.js}"></script>
-    <link rel="stylesheet" type="text/css" href="../../css/jquery-ui-1.10.3.custom.min.css" th:href="@{/css/jquery-ui-1.10.3.custom.min.css}" />
+    <script type="text/javascript" src="../../js/pageops.js" th:src="@{/js/pageops.js}"></script>
+    <script type="text/javascript" src="../../js/mark_special_links.js" th:src="@{/js/mark_special_links.js}"></script>
+    <link rel="shortcut icon" href="#" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
+    <link rel="icon" href="#" th:href="@{/images/eealogo256x256.png}" type="image/png" />
   </head>
   <body>
     <div id="container">
@@ -27,21 +33,10 @@
             <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode">
               <span>Switch to/from full screen mode</span>
             </a>
-            <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms">
-              <span>Acronyms</span>
-            </a>
+            <a href="about.html" th:href="@{/about}"><span>About</span></a>
             <a id="rsslink" type="application/rss+xml" href="http://www.eionet.europa.eu/announcements.rdf" title="Eionet headlines as RSS">
               <span>RSS</span>
             </a>
-            <form action="http://www.google.com/cse" id="cse-search-box">
-              <div id="freesrchform">
-                <input name="cx" type="hidden" value="010617083146134556574:ymkqzb7sibw"/>
-                <input name="ie" type="hidden" value="UTF-8"/>
-                <input name="sa" type="hidden" value="Search"/>
-                <input id="freesrchfld" type="text" name="q" size="10" onfocus="if(this.value=='Search Eionet')this.value='';" onblur="if(this.value=='')this.value='Search Eionet';" title="Search Eionet" value="Search Eionet"/>
-                <input id="freesrchbtn" type="image" src="http://www.eionet.europa.eu/styles/eionet2007/button_go.gif" alt="Go"/>
-              </div>
-            </form>
           </div>
         </div>
         <!-- toolribbon -->
@@ -95,7 +90,7 @@
               <li><a href="about.html" th:href="@{/about}">About Transfer</a></li>
               <li><a href="fileupload.html" th:href="@{/fileupload}">Transfer file</a></li>
               <li sec:authorize-url="/uploads"><a href="uploads.html" th:href="@{/uploads}">Current uploads</a></li>
-              <li sec:authorize="hasRole('ROLE_ADMIN')">
+              <li sec:authorize="hasRole('ADMIN')">
                  <a href="view_users.html" th:href="@{/users/view}">User authorisations</a>
               </li>
             </ul>

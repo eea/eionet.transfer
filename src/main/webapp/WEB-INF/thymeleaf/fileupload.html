@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head th:include="layout :: headerFragment">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   </head>
   <body>
     <div id="container">
@@ -14,9 +15,10 @@
           <br/>
           <label for="fileTTL">The file will be kept on the server for:</label>
           <select name="fileTTL" id="fileTTL">
-            <option selected="selected" value="240">10 days</option>
-            <option value="720">1 month</option>
-            <option value="2160">3 months</option>
+            <option selected="selected" value="10">10 days</option>
+            <option value="30">1 month</option>
+            <option value="90">3 months</option>
+            <option value="-1" sec:authorize="hasRole('NOEXPIRATION')">Indefinite</option>
           </select>
           <p>Click this button to upload &amp; share your file</p>
           <input type="submit" value="Upload" />

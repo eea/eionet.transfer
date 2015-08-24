@@ -9,13 +9,12 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
 
-   <util:properties id="cas" location="classpath:cas.properties"/>
+    <util:properties id="cas" location="classpath:cas.properties"/>
 
-<!-- use-expressions="true"  -->
     <security:http entry-point-ref="casEntryPoint" pattern="/**" use-expressions="true" auto-config="false">
         <security:intercept-url pattern="/login" access="isAuthenticated()"/>
         <security:intercept-url pattern="/fileupload" access="isAuthenticated()" />
-        <security:intercept-url pattern="/uploads" access="hasRole('ROLE_ADMIN')" />
+        <security:intercept-url pattern="/uploads" access="hasRole('ADMIN')" />
         <security:intercept-url pattern="/users/**" access="hasRole('ADMIN')"/>
         <security:intercept-url pattern="/**" access="permitAll()"/>
         <security:custom-filter position="CAS_FILTER" ref="casFilter" />

@@ -9,7 +9,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is Web Questionnaires 2
+ * The Original Code is Web Transfer
  *
  * The Initial Owner of the Original Code is European Environment
  * Agency. Portions created by TripleDev are Copyright
@@ -27,5 +27,5 @@ public enum UserRole {
     /**
      * Roles.
      */
-    ADMIN, DEVELOPER
+    ADMIN, UPLOADER
 }

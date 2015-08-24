@@ -63,14 +63,15 @@ public class FileOpsController {
     public String importFile(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
                         final RedirectAttributes redirectAttributes) throws IOException { 
-        //String pageTitle = "Upload file";
 
-        //String dirFolder = System.getProperty("files.folder", "/var/tmp");
-        //String uuidName = UUID.randomUUID().toString();
+        if (fileTTL > 90) {
+            //model.addAttribute("message", "Invalid expiration date");
+            return "fileupload"; 
+        }
         String uuidName = storageService.save(myFile);
         redirectAttributes.addFlashAttribute("uuid", uuidName);
         long now = System.currentTimeMillis();
-        Date expirationDate = new Date(now + fileTTL * 3600L * 1000L);
+        Date expirationDate = new Date(now + fileTTL * 3600L * 24L * 1000L);
 
         Upload rec = new Upload();
         rec.setId(uuidName);

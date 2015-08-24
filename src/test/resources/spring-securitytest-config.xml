@@ -9,7 +9,7 @@
 <!-- use-expressions="true"  -->
         <http auto-config="true">
             <intercept-url pattern="/fileupload" access="isAuthenticated()" />
-            <intercept-url pattern="/uploads" access="hasRole('ROLE_ADMIN')" />
+            <intercept-url pattern="/uploads" access="hasRole('ADMIN')" />
             <intercept-url pattern="/users/**" access="hasRole('ADMIN')"/>
         </http>
 
@@ -17,7 +17,7 @@
           <authentication-provider>
             <user-service>
                 <user name="uploader" password="123456" authorities="" />
-                <user name="admin" password="123456" authorities="ROLE_ADMIN" />
+                <user name="admin" password="123456" authorities="ADMIN" />
             </user-service>
           </authentication-provider>
         </authentication-manager>
