@@ -21,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 /**
  * File operations - upload, download, delete.
@@ -47,8 +48,12 @@ public class FileOpsController {
     /**
      * Helper method to get authenticated userid.
      */
-    private String getUserName() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private String getUserName() throws AuthenticationCredentialsNotFoundException {
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+        //if (auth == null) {
+        //    throw new AuthenticationCredentialsNotFoundException("Not authenticated");
+        //}
+        Object principal = auth.getPrincipal();
         if (principal instanceof UserDetails) {
             return ((UserDetails)principal).getUsername();
         } else {
