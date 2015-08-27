@@ -21,7 +21,7 @@
         <property name="dirFolder" value="/var/tmp" />
     </bean>
 
-    <bean id="userService" class="eionet.transfer.dao.JdbcUserManagementService">
+    <bean id="userService" class="eionet.transfer.dao.UserManagementServiceJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 

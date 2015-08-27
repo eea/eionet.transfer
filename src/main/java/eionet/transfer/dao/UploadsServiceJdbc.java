@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * Service to store metadata for uploaded files using JDBC.
+ */
 public class UploadsServiceJdbc implements UploadsService {
 
     private DataSource dataSource;
@@ -39,8 +42,7 @@ public class UploadsServiceJdbc implements UploadsService {
         Upload uploadRec = jdbcTemplate.queryForObject(query, new Object[]{id}, new RowMapper<Upload>() {
 
             @Override
-            public Upload mapRow(ResultSet rs, int rowNum)
-                    throws SQLException {
+            public Upload mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Upload uploadRec = new Upload();
                 uploadRec.setId(rs.getString("id"));
                 uploadRec.setFilename(rs.getString("filename"));
