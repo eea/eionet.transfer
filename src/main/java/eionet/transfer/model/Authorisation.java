@@ -1,5 +1,8 @@
 package eionet.transfer.model;
 
+/**
+ * Object to hold user and roles.
+ */
 public class Authorisation {
 	
     private String userId;

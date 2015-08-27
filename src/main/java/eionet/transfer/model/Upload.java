@@ -3,6 +3,10 @@ package eionet.transfer.model;
 import eionet.transfer.util.Humane;
 import java.util.Date;
 
+/**
+ * Management and metadata for uploaded files. Contains original file name
+ * expiration date etc.
+ */
 public class Upload {
 	
     private String id;

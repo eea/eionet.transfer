@@ -30,13 +30,15 @@ import org.springframework.security.provisioning.GroupManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
-
-public class UserManagementServiceImpl extends JdbcUserDetailsManager implements UserManagementService, UserDetailsManager, GroupManager {
+/**
+ * Extends Springs JDBC implementation to add a list of all users.
+ */
+public class JdbcUserManagementService extends JdbcUserDetailsManager implements UserManagementService, UserDetailsManager, GroupManager {
     
-    public static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users"; 
+    private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users"; 
     
     @Override
-    public List<UserDetails> getAllUsers(){
+    public List<UserDetails> getAllUsers() {
         return getJdbcTemplate().query(DEF_GET_ALL_USERS_SQL, new String[] {},
                     new RowMapper<UserDetails>() {
                         public UserDetails mapRow(ResultSet rs, int rowNum) throws SQLException {

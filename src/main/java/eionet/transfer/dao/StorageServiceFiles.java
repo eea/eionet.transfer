@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
-
+/**
+ * Service to store files in the file system.
+ */
 public class StorageServiceFiles implements StorageService {
 
     /**

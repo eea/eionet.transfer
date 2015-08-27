@@ -6,6 +6,12 @@ package eionet.transfer.util;
 public class Humane {
 
     /**
+     * Prevent instantiation.
+     */
+    private Humane() {
+    }
+
+    /**
      * Return a size with three significant digits and a size unit.
      */
     public static String humaneSize(long size) {

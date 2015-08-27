@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Service to put files in storage. The storage can be file system, object database etc.
+ */
 public interface StorageService {
 
     /**

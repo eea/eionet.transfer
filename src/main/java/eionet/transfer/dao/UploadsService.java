@@ -6,22 +6,22 @@ import java.util.Date;
 import eionet.transfer.model.Upload;
 
 /**
- * Data for uploaded files.
+ * Service to store metadata for uploaded files.
  */
 public interface UploadsService {
 
     /**
-     * Save the meta data for an upload.
+     * Save the metadata for an upload.
      */
     void save(Upload upload);
 
     /**
-     * Fetch the meta data for one upload.
+     * Fetch the metadata for one upload.
      */
     Upload getById(String id);
 
     /**
-     * Delete file by Id.
+     * Delete metadata for file by Id.
      */
     void deleteById(String id);
 

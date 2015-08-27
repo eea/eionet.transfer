@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ * View uploaded files.
+ */
 @Controller
 public class UploadsController {
 
@@ -19,7 +22,7 @@ public class UploadsController {
     private UploadsService uploadsService;
 
     @RequestMapping(value="/uploads", method=RequestMethod.GET)
-    public String findUploadsThymeLeaf(Model model){
+    public String findUploads(Model model) {
         String pageTitle = "Uploads List";
 
         List<Upload> uploads = uploadsService.getAll();
