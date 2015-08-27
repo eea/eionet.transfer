@@ -8,10 +8,10 @@ public class Authorisation {
     private String userId;
     
     /** Comma separated list of roles. */
-    private String authorisations;
+    private String[] authorisations;
     
 
-    public Authorisation(String userId, String authorisations) {
+    public Authorisation(String userId, String[] authorisations) {
         this.userId = userId;
         this.authorisations = authorisations;
     }
@@ -20,7 +20,7 @@ public class Authorisation {
         return userId;
     }
 
-    public String getAuthorisations() {
+    public String[] getAuthorisations() {
         return authorisations;
     }
     

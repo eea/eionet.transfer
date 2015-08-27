@@ -27,5 +27,5 @@ public enum UserRole {
     /**
      * Roles.
      */
-    ADMIN, UPLOADER
+    ROLE_ADMIN, ROLE_NOEXPIRATION
 }

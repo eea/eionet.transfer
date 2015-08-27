@@ -14,21 +14,18 @@
         <li><a href="view_user.html" th:href="@{/users/view}" >Back to users</a></li>
     </ul>
 </div>
-<form action="edit" th:action="@{/users/edit}" method="post">
+<form action="edit" th:action="@{/users/edit}" th:object="${user}" method="post">
     <table class="datatable">
         <tr>
             <th scope="row"><label for="userName">Username</label></th>
-            <td><input id="userName" name="userName" value="john" th:value="${userName}" type="text" readonly="readonly"/></td>
+            <td><input type="text" value="john" th:field="*{username}" readonly="readonly"/></td>
         </tr>
         <tr>
-            <th scope="row"><label for="roles">Select user role</label></th>
+            <th scope="row"><label>Select user role</label></th>
             <td>
                 <div th:each="validRole : ${allRoles}">
-                    <input type="radio" name="role" value="ADMIN" id="roleadmin"
-                    th:id="|role_${validRole}|"
-                    th:value="${validRole}"
-                    th:checked="${#lists.contains(role, validRole)}" />
-                    <label for="roleadmin" th:for="|role_${validRole}|" th:text="${validRole}">ADMIN</label>
+                    <label><input type="checkbox" id="roleadmin" value="ADMIN" th:field="*{authorities.authority}" th:value="${validRole}"/>
+                    <th:block th:text="${validRole}">ADMIN</th:block></label>
                 </div>
             </td>
         </tr>

@@ -21,18 +21,21 @@
  */
 package eionet.transfer.controller;
 
-import eionet.transfer.model.UserRole;
 import eionet.transfer.dao.UserManagementService;
+import eionet.transfer.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.List;
 
 /**
  * User managing controller.
@@ -51,6 +54,15 @@ public class UserController {
     @Autowired
     UserManagementService userManagementService;
     
+    @ModelAttribute("allRoles")
+    public List<SimpleGrantedAuthority> allRoles() {
+        ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+        for (UserRole authority : UserRole.values()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.toString()));
+        }
+        return grantedAuthorities;
+    }
+
     /**
      * View for all users
      * @param model model
@@ -72,7 +84,7 @@ public class UserController {
      */
     @RequestMapping("/new")
     public String newUser(Model model, @RequestParam(required = false) String message) {
-        model.addAttribute("allRoles", UserRole.values());
+        //model.addAttribute("allRoles", UserRole.values());
         if(message != null) model.addAttribute("message", message);
         return NEW_USER_HTML;
     }
@@ -88,14 +100,14 @@ public class UserController {
     public String addUser(@RequestParam String userName, @RequestParam UserRole role, Model model) {  
         if( userName.trim().equals("") ){
             model.addAttribute("message", "User's username cannot be empty");
-            model.addAttribute("allRoles", UserRole.values());
+            //model.addAttribute("allRoles", UserRole.values());
             return "redirect:new";
         }
         
         User user = new User(userName, "", Arrays.asList(new SimpleGrantedAuthority(role.name())));
         if (userManagementService.userExists(userName)) {
             model.addAttribute("message", "User " + userName + " already exists");
-            model.addAttribute("allRoles", UserRole.values());
+            //model.addAttribute("allRoles", UserRole.values());
             return "redirect:new";
         }
         
@@ -103,7 +115,6 @@ public class UserController {
         userManagementService.createUser(user);
         model.addAttribute("message", "User " + userName + " added with role " + role);
         return "redirect:view";
-          
     }
     
     /**
@@ -115,11 +126,12 @@ public class UserController {
      */
     @RequestMapping("/existing")
     public String existingUser(@RequestParam String userName, Model model, @RequestParam(required = false) String message) {
-        model.addAttribute("allRoles", UserRole.values());
+        //model.addAttribute("allRoles", UserRole.values());
         model.addAttribute("userName", userName);
         UserDetails user = userManagementService.loadUserByUsername(userName);
-        model.addAttribute("role", user.getAuthorities());
-        if(message != null) model.addAttribute("message", message);
+        model.addAttribute("user", user);
+        //model.addAttribute("roles", user.getAuthorities());
+        if (message != null) model.addAttribute("message", message);
         return EXISTING_USER_HTML;
     }
     
@@ -131,10 +143,14 @@ public class UserController {
      * @return view name
      */
     @RequestMapping("/edit")
-    public String editUser(@RequestParam String userName, @RequestParam UserRole role, Model model) {    
-        User user = new User(userName, "", Arrays.asList(new SimpleGrantedAuthority(role.name())));
+    public String editUser(@RequestParam UserDetails user, Model model) {    
+        //ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+        //for (String authority : authorities) {
+        //    grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+        //}
+        //User user = new User(username, "", grantedAuthorities);
         userManagementService.updateUser(user);
-        model.addAttribute("message", "User " + userName + " updated with role " + role);
+        model.addAttribute("message", "User " + user.getUsername() + " updated with role " + user.getAuthorities());
         return "redirect:view";
     }
     
@@ -148,8 +164,7 @@ public class UserController {
     public String deleteUser(@RequestParam String userName, Model model) {
         if (!userManagementService.userExists(userName)){
             model.addAttribute("message", "User " + userName + " was not deleted, because it does not exist ");
-        }
-        else{
+        } else {
             userManagementService.deleteUser(userName);
             model.addAttribute("message", "User " + userName + " deleted ");
         }
