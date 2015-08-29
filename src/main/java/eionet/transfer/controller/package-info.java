@@ -1,5 +1,5 @@
-package eionet.transfer.controller;
 
 /**
  * Controllers for the web interface.
  */
+package eionet.transfer.controller;
