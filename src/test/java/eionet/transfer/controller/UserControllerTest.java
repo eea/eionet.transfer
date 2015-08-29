@@ -57,7 +57,7 @@ public class UserControllerTest extends AbstractContextControllerTests {
 
     @Test
     public void allRolesAreInModel() throws Exception {
-        request(get("/users/new")).andExpect(model().attributeExists("allRoles"));
+        request(get("/users/view")).andExpect(model().attributeExists("allRoles"));
     }
 
     @Test

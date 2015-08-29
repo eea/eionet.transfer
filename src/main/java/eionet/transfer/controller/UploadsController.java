@@ -21,11 +21,11 @@ public class UploadsController {
     @Autowired
     private UploadsService uploadsService;
 
-    @RequestMapping(value="/uploads", method=RequestMethod.GET)
+    @RequestMapping(value = "/uploads", method = RequestMethod.GET)
     public String findUploads(Model model) {
         String pageTitle = "Uploads List";
 
-        List<Upload> uploads = uploadsService.getAll();
+        List<Upload> uploads = uploadsService.getUnexpired();
         model.addAttribute("uploads", uploads);
         model.addAttribute("title", pageTitle);
         BreadCrumbs.set(model, pageTitle);

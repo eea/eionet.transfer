@@ -4,12 +4,11 @@ package eionet.transfer.model;
  * This class implements one breadcrumb.
  */
 public class BreadCrumb {
-	
+
     /** link to place in hierarchy. Can be null for last crumb. */
     private String link;
     /** The text for the link. */
     private String linktext;
-
 
     public BreadCrumb(String link, String linktext) {
         this.link = link;

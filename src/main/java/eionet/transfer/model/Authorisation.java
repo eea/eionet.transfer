@@ -1,15 +1,15 @@
 package eionet.transfer.model;
 
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Object to hold user and roles.
  */
 public class Authorisation {
-	
+
     private String userId;
-    
+
     /** List of roles. */
     private List<String> authorisations;
 
@@ -17,6 +17,7 @@ public class Authorisation {
      * Constructor of empty object.
      */
     public Authorisation() {
+        this.authorisations = new ArrayList<String>();
     }
 
     /**

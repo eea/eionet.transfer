@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head th:include="layout :: headerFragment">
-  <link href="../../style/app.css" th:href="@{/style/app.css}" rel="stylesheet"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   </head>
   <body>
     <div id="container">
@@ -24,13 +24,12 @@
             </thead>
             <tbody th:remove="all-but-first">
               <tr th:each="uploads : ${uploads}">
-                <td th:text="${uploads.id}">99999</td>
+                <td><a th:href="@{'/download/'+${uploads.id}}" href="#" th:text="${uploads.id}">99999</a></td>
                 <td th:text="${uploads.filename}">Long realistic file name</td>
                 <td th:text="${uploads.expires}">2014-11-29</td>
                 <td th:text="${uploads.humaneSize}">8932893</td>
                 <td th:text="${uploads.uploader}">uploader</td>
-                <td><a th:href="@{'/download/'+${uploads.id}}" href="#">Download</a> |
-                    <a th:href="@{'/delete/'+${uploads.id}}" href="#">Delete</a>
+                <td><a th:href="@{'/delete/'+${uploads.id}}" href="#">Delete</a>
                 </td>
               </tr>
               <tr>

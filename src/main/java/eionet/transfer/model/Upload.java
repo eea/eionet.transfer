@@ -15,7 +15,7 @@ public class Upload {
     private String uploader;
     private String contentType;
     private long fileSize;
-    
+
     public String getId() {
         return id;
     }

@@ -1,16 +1,22 @@
 package eionet.transfer.controller;
 
-import eionet.transfer.util.BreadCrumbs;
 import eionet.transfer.dao.StorageService;
 import eionet.transfer.dao.UploadsService;
 import eionet.transfer.model.Upload;
+import eionet.transfer.util.BreadCrumbs;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 /**
  * File operations - upload, download, delete.
@@ -38,24 +40,30 @@ public class FileOpsController {
     @Autowired
     private StorageService storageService;
 
+    //private static final Logger logger = Logger.getLogger(FileOpsController.class);
+    private Log logger = LogFactory.getLog(FileOpsController.class);
+
+    /**
+     * Form for uploading a file.
+     */
     @RequestMapping(value = "/fileupload")
     public String fileUpload(Model model) {
         String pageTitle = "Upload file";
         BreadCrumbs.set(model, pageTitle);
-        return "fileupload"; 
-    } 
+        return "fileupload";
+    }
 
     /**
      * Helper method to get authenticated userid.
      */
-    private String getUserName() throws AuthenticationCredentialsNotFoundException {
+    private String getUserName() {
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
         //if (auth == null) {
-        //    throw new AuthenticationCredentialsNotFoundException("Not authenticated");
+        //    throw new IllegalArgumentException("Not authenticated");
         //}
         Object principal = auth.getPrincipal();
         if (principal instanceof UserDetails) {
-            return ((UserDetails)principal).getUsername();
+            return ((UserDetails) principal).getUsername();
         } else {
             return principal.toString();
         }
@@ -64,14 +72,18 @@ public class FileOpsController {
     /**
      * Upload file for transfer.
      */
-    @RequestMapping(value = "/fileupload", method = RequestMethod.POST) 
+    @RequestMapping(value = "/fileupload", method = RequestMethod.POST)
     public String importFile(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
-                        final RedirectAttributes redirectAttributes) throws IOException { 
+                        final RedirectAttributes redirectAttributes) throws IOException {
 
+        if (myFile == null || myFile.getOriginalFilename() == null) {
+            redirectAttributes.addFlashAttribute("message", "Select a file to upload");
+            return "redirect:fileupload";
+        }
         if (fileTTL > 90) {
-            //model.addAttribute("message", "Invalid expiration date");
-            return "fileupload"; 
+            redirectAttributes.addFlashAttribute("message", "Invalid expiration date");
+            return "redirect:fileupload";
         }
         String uuidName = storageService.save(myFile);
         redirectAttributes.addFlashAttribute("uuid", uuidName);
@@ -87,9 +99,9 @@ public class FileOpsController {
         String userName = getUserName();
         rec.setUploader(userName);
         uploadsService.save(rec);
-        // Redirect to a successful upload page 
-        return "redirect:uploadSuccess"; 
-    } 
+        logger.info("Uploaded: " + myFile.getOriginalFilename() + " by " + userName);
+        return "redirect:uploadSuccess";
+    }
 
     /**
      * Page to show upload success.
@@ -100,10 +112,6 @@ public class FileOpsController {
         BreadCrumbs.set(model, pageTitle);
         StringBuffer requestUrl = request.getRequestURL();
         model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/uploadSuccess".length()));
-        //if (model.containsAttribute("uuid")) {
-        //    String uuid = (String) model.asMap().get("uuid");
-        //    model.addAttribute("uuid", uuid); // Make it persistent for browser refresh
-        //}
         return "uploadSuccess";
     }
 
@@ -111,7 +119,7 @@ public class FileOpsController {
      * Download a file.
      */
     @RequestMapping(value = "/download/{file_name}", method = RequestMethod.GET)
-    public void getFile(
+    public void downloadFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
         Upload uploadRec = uploadsService.getById(fileId);
         Date today = new Date(System.currentTimeMillis());
@@ -142,17 +150,18 @@ public class FileOpsController {
                 storageService.deleteById(fileId);
             }
         } catch (IOException ex) {
-            // Ignore errors here
+            logger.error("I/O exception when deleting expired files");
         }
 
     }
 
-    @RequestMapping(value = "/delete/{file_name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{file_name}")
     public String deleteFile(
-        @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
+        @PathVariable("file_name") String fileId, final RedirectAttributes redirectAttributes) throws IOException {
         uploadsService.deleteById(fileId);
         storageService.deleteById(fileId);
-        return "deleteSuccess"; 
+        redirectAttributes.addFlashAttribute("message", "File deleted");
+        return "redirect:/";
     }
 }
 

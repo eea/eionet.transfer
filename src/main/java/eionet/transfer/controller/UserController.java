@@ -24,6 +24,7 @@ package eionet.transfer.controller;
 import eionet.transfer.dao.UserManagementService;
 import eionet.transfer.model.UserRole;
 import eionet.transfer.model.Authorisation;
+import eionet.transfer.util.BreadCrumbs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -47,9 +49,8 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    public static final String VIEW_USERS_HTML = "view_users";
-    public static final String NEW_USER_HTML = "new_user";
-    public static final String EXISTING_USER_HTML = "existing_user";
+    private static final String VIEW_USERS_HTML = "view_users";
+    private static final String EXISTING_USER_HTML = "existing_user";
 
     /**
      * Service for user management.
@@ -67,30 +68,20 @@ public class UserController {
     }
 
     /**
-     * View for all users
+     * View for all users.
+     *
      * @param model model
      * @param message
      * @return view name
      */
-    @RequestMapping("/view")
+    @RequestMapping({"", "/", "/view"})
     public String viewUsers(Model model, @RequestParam(required = false) String message) {
+        BreadCrumbs.set(model, "Users");
         model.addAttribute("allUsers", userManagementService.getAllUsers());
-        if(message != null) model.addAttribute("message", message);
-        return VIEW_USERS_HTML;
-    }
-
-    /**
-     * Form for adding a new user.
-     * @param model
-     * @param message
-     * @return view name
-     */
-    @RequestMapping("/new")
-    public String newUser(Model model, @RequestParam(required = false) String message) {
-        if(message != null) model.addAttribute("message", message);
         Authorisation user = new Authorisation();
         model.addAttribute("user", user);
-        return NEW_USER_HTML;
+        if(message != null) model.addAttribute("message", message);
+        return VIEW_USERS_HTML;
     }
 
     /**
@@ -101,24 +92,29 @@ public class UserController {
      * @return view name
      */
     @RequestMapping("/add")
-    public String addUser(Authorisation user, Model model) {
+    public String addUser(Authorisation user, RedirectAttributes redirectAttributes) {
         String userName = user.getUserId();
-        if(userName.trim().equals("")) {
-            model.addAttribute("message", "User's username cannot be empty");
-            return "redirect:new";
+        if (userName.trim().equals("")) {
+            redirectAttributes.addFlashAttribute("message", "User's username cannot be empty");
+            return "redirect:view";
         }
 
         ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+        if (user.getAuthorisations() == null) {
+            redirectAttributes.addFlashAttribute("message", "Add at least one role");
+            return "redirect:view";
+        }
         for (String authority : user.getAuthorisations()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
         User userDetails = new User(user.getUserId(), "", grantedAuthorities);
         if (userManagementService.userExists(userName)) {
-            model.addAttribute("message", "User " + userName + " already exists");
-            return "redirect:new";
+            redirectAttributes.addFlashAttribute("message", "User " + userName + " already exists");
+            return "redirect:view";
         }
         userManagementService.createUser(userDetails);
-        model.addAttribute("message", "User " + user.getUserId() + " added with role " + user.getAuthorisations());
+        redirectAttributes.addFlashAttribute("message", "User " + user.getUserId()
+                + " added with role " + user.getAuthorisations());
         return "redirect:view";
     }
 
@@ -132,6 +128,7 @@ public class UserController {
     @RequestMapping("/existing")
     public String existingUser(@RequestParam String userName, Model model, @RequestParam(required = false) String message) {
         model.addAttribute("userName", userName);
+        BreadCrumbs.set(model, "Modify user");
         UserDetails userDetails = userManagementService.loadUserByUsername(userName);
 
         ArrayList<String> userRoles = new ArrayList<String>();

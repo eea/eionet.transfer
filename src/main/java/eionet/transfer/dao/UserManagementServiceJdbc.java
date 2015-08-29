@@ -33,7 +33,8 @@ import org.springframework.security.provisioning.UserDetailsManager;
 /**
  * Extends Spring's JDBC implementation to add a list of all users.
  */
-public class UserManagementServiceJdbc extends JdbcUserDetailsManager implements UserManagementService, UserDetailsManager, GroupManager {
+public class UserManagementServiceJdbc extends JdbcUserDetailsManager
+        implements UserManagementService, UserDetailsManager, GroupManager {
 
     private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users";
 

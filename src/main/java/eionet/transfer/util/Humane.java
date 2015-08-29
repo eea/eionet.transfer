@@ -32,7 +32,7 @@ public class Humane {
         } else {
             return String.valueOf(size);
         }
-            
+
         String format = "%.0f";
         String rawStrVal = String.valueOf(size);
         int sizeLen = rawStrVal.length();

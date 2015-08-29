@@ -37,7 +37,6 @@ public class UploadsServiceJdbc implements UploadsService {
         String query = "SELECT id, expires, filename, uploader, contenttype, filesize FROM uploads WHERE id = ?";
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        //using RowMapper anonymous class, we can create a separate RowMapper for reuse
         Upload uploadRec = jdbcTemplate.queryForObject(query, new Object[]{id}, new RowMapper<Upload>() {
 
             @Override
@@ -50,7 +49,8 @@ public class UploadsServiceJdbc implements UploadsService {
                 uploadRec.setContentType(rs.getString("contenttype"));
                 uploadRec.setSize(rs.getLong("filesize"));
                 return uploadRec;
-            }});
+            }
+        });
 
         return uploadRec;
     }
@@ -101,6 +101,25 @@ public class UploadsServiceJdbc implements UploadsService {
         for (Map<String, Object> row : rows) {
             String uuidName = new String((String) row.get("id"));
             uploadList.add(uuidName);
+        }
+        return uploadList;
+    }
+
+    @Override
+    public List<Upload> getUnexpired() {
+        Date now = new Date(System.currentTimeMillis());
+        return getUnexpired(now);
+    }
+
+    @Override
+    public List<Upload> getUnexpired(Date expireDate) {
+        List<Upload> allUploads = getAll();
+        List<Upload> uploadList = new ArrayList<Upload>();
+
+        for (Upload upload : allUploads) {
+            if (expireDate.before(upload.getExpires())) {
+                uploadList.add(upload);
+            }
         }
         return uploadList;
     }
