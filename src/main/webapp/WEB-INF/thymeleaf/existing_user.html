@@ -18,19 +18,19 @@
     <table class="datatable">
         <tr>
             <th scope="row"><label for="userName">Username</label></th>
-            <td><input type="text" value="john" th:field="*{username}" readonly="readonly"/></td>
+            <td><input type="text" value="john" th:field="*{userId}" readonly="readonly"/></td>
         </tr>
         <tr>
-            <th scope="row"><label>Select user role</label></th>
+            <th scope="row"><label>User roles</label></th>
             <td>
                 <div th:each="validRole : ${allRoles}">
-                    <label><input type="checkbox" id="roleadmin" value="ADMIN" th:field="*{authorities.authority}" th:value="${validRole}"/>
-                    <th:block th:text="${validRole}">ADMIN</th:block></label>
+                    <input type="checkbox" value="ADMIN" th:field="*{authorisations}" th:value="${validRole}"/>
+                    <label for="${#ids.prev('authorisations')}" th:text="${validRole}">ADMIN</label>
                 </div>
             </td>
         </tr>
     </table>
-    <input type="submit" value="Edit user"/>
+    <input type="submit" value="Update user"/>
 </form>
       </div>
     </div>
