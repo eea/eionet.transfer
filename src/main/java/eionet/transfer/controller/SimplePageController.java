@@ -4,7 +4,6 @@ import eionet.transfer.util.BreadCrumbs;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controller for simple pages.
@@ -57,6 +56,5 @@ public class SimplePageController {
     public String logout() {
         return "logout_all_apps";
     }
-
 
 }

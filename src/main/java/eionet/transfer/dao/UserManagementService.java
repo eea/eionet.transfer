@@ -9,7 +9,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is Web Questionnaires 2
+ * The Original Code is Web Transfer 1.0
  *
  * The Initial Owner of the Original Code is European Environment
  * Agency. Portions created by TripleDev are Copyright
@@ -29,12 +29,12 @@ import org.springframework.security.provisioning.UserDetailsManager;
  * Additional operations for Springs UserDetailsManager.
  */
 public interface UserManagementService extends UserDetailsManager, GroupManager {
-    
+
     /**
-     * Returns a list of all users
+     * Returns a list of all users.
      *
      * @return list of users
      */
-    public List<UserDetails> getAllUsers();
-    
+    List<UserDetails> getAllUsers();
+
 }

@@ -9,10 +9,10 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is Web Questionnaires 2
+ * The Original Code is Web Transfer 1.0
  *
  * The Initial Owner of the Original Code is European Environment
- * Agency. Portions created by TripleDev are Copyright
+ * Agency. Portions created by TripleDev and Eworx are Copyright
  * (C) European Environment Agency.  All Rights Reserved.
  *
  * Contributor(s):
@@ -34,9 +34,9 @@ import org.springframework.security.provisioning.UserDetailsManager;
  * Extends Spring's JDBC implementation to add a list of all users.
  */
 public class UserManagementServiceJdbc extends JdbcUserDetailsManager implements UserManagementService, UserDetailsManager, GroupManager {
-    
-    private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users"; 
-    
+
+    private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users";
+
     @Override
     public List<UserDetails> getAllUsers() {
         return getJdbcTemplate().query(DEF_GET_ALL_USERS_SQL, new String[] {},
@@ -50,5 +50,5 @@ public class UserManagementServiceJdbc extends JdbcUserDetailsManager implements
 
                     });
     }
-    
+
 }
