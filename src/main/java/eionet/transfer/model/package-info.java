@@ -1,5 +1,5 @@
-package eionet.transfer.model;
 
 /**
  * Data objects.
  */
+package eionet.transfer.model;

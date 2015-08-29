@@ -1,5 +1,5 @@
-package eionet.transfer.dao;
 
 /**
  * Database access/services.
  */
+package eionet.transfer.dao;

@@ -1,5 +1,5 @@
-package eionet.transfer.util;
 
 /**
  * Utility functions.
  */
+package eionet.transfer.util;
