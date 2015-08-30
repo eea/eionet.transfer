@@ -1,0 +1,9 @@
+
+progress:not([value]) {
+   /* Styling here */
+}
+
+progress[value] {
+  width: 250px;
+  height: 20px;
+}

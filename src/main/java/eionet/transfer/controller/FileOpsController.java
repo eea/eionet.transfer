@@ -49,8 +49,48 @@ public class FileOpsController {
     @RequestMapping(value = "/fileupload")
     public String fileUpload(Model model) {
         String pageTitle = "Upload file";
+        model.addAttribute("title", pageTitle);
         BreadCrumbs.set(model, pageTitle);
         return "fileupload";
+    }
+
+    /**
+     * Upload file for transfer.
+     */
+    @RequestMapping(value = "/fileupload", method = RequestMethod.POST)
+    public String importFile(@RequestParam("file") MultipartFile myFile,
+                        @RequestParam("fileTTL") int fileTTL,
+                        final RedirectAttributes redirectAttributes) throws IOException {
+
+        if (myFile == null || myFile.getOriginalFilename() == null) {
+            redirectAttributes.addFlashAttribute("message", "Select a file to upload");
+            return "redirect:fileupload";
+        }
+        if (fileTTL > 90) {
+            redirectAttributes.addFlashAttribute("message", "Invalid expiration date");
+            return "redirect:fileupload";
+        }
+        String uuidName = storeFile(myFile, fileTTL);
+        redirectAttributes.addFlashAttribute("uuid", uuidName);
+        return "redirect:uploadSuccess";
+    }
+
+    private String storeFile(MultipartFile myFile, int fileTTL) throws IOException {
+        String uuidName = storageService.save(myFile);
+        long now = System.currentTimeMillis();
+        Date expirationDate = new Date(now + fileTTL * 3600L * 24L * 1000L);
+
+        Upload rec = new Upload();
+        rec.setId(uuidName);
+        rec.setFilename(myFile.getOriginalFilename());
+        rec.setContentType(myFile.getContentType());
+        rec.setExpires(expirationDate);
+        rec.setSize(myFile.getSize());
+        String userName = getUserName();
+        rec.setUploader(userName);
+        uploadsService.save(rec);
+        logger.info("Uploaded: " + myFile.getOriginalFilename() + " by " + userName);
+        return uuidName;
     }
 
     /**
@@ -70,45 +110,12 @@ public class FileOpsController {
     }
 
     /**
-     * Upload file for transfer.
-     */
-    @RequestMapping(value = "/fileupload", method = RequestMethod.POST)
-    public String importFile(@RequestParam("file") MultipartFile myFile,
-                        @RequestParam("fileTTL") int fileTTL,
-                        final RedirectAttributes redirectAttributes) throws IOException {
-
-        if (myFile == null || myFile.getOriginalFilename() == null) {
-            redirectAttributes.addFlashAttribute("message", "Select a file to upload");
-            return "redirect:fileupload";
-        }
-        if (fileTTL > 90) {
-            redirectAttributes.addFlashAttribute("message", "Invalid expiration date");
-            return "redirect:fileupload";
-        }
-        String uuidName = storageService.save(myFile);
-        redirectAttributes.addFlashAttribute("uuid", uuidName);
-        long now = System.currentTimeMillis();
-        Date expirationDate = new Date(now + fileTTL * 3600L * 24L * 1000L);
-
-        Upload rec = new Upload();
-        rec.setId(uuidName);
-        rec.setFilename(myFile.getOriginalFilename());
-        rec.setContentType(myFile.getContentType());
-        rec.setExpires(expirationDate);
-        rec.setSize(myFile.getSize());
-        String userName = getUserName();
-        rec.setUploader(userName);
-        uploadsService.save(rec);
-        logger.info("Uploaded: " + myFile.getOriginalFilename() + " by " + userName);
-        return "redirect:uploadSuccess";
-    }
-
-    /**
      * Page to show upload success.
      */
     @RequestMapping(value = "/uploadSuccess")
     public String uploadResult(Model model, HttpServletRequest request) {
         String pageTitle = "File uploaded";
+        model.addAttribute("title", pageTitle);
         BreadCrumbs.set(model, pageTitle);
         StringBuffer requestUrl = request.getRequestURL();
         model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/uploadSuccess".length()));
