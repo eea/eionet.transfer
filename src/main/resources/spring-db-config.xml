@@ -25,4 +25,12 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <!--
+    <bean id="initialUser" class="eionet.transfer.dao.InitialUser"
+        depends-on="org.h2.tools.Server" init-method="createUser">
+        <property name="userManagementService" ref="userService"/>
+        <property name="initialUser" value="prevert"/>
+    </bean>
+    -->
+
 </beans>

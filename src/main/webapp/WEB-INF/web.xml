@@ -44,11 +44,6 @@
         <param-value>
             /WEB-INF/classes/spring-security.xml /WEB-INF/classes/spring-db-config.xml
         </param-value>
-        <!--
-        <param-value>
-            /WEB-INF/classes/spring-security.xml /WEB-INF/classes/spring-db-config.xml
-        </param-value>
-        -->
     </context-param>
 
 

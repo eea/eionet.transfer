@@ -41,7 +41,6 @@ public class FileOpsController {
     @Autowired
     private StorageService storageService;
 
-    //private static final Logger logger = Logger.getLogger(FileOpsController.class);
     private Log logger = LogFactory.getLog(FileOpsController.class);
 
     /**
@@ -61,7 +60,8 @@ public class FileOpsController {
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST)
     public String importFile(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
-                        final RedirectAttributes redirectAttributes) throws IOException {
+                        final RedirectAttributes redirectAttributes,
+                        final HttpServletRequest request) throws IOException {
 
         if (myFile == null || myFile.getOriginalFilename() == null) {
             redirectAttributes.addFlashAttribute("message", "Select a file to upload");
@@ -73,35 +73,15 @@ public class FileOpsController {
         }
         String uuidName = storeFile(myFile, fileTTL);
         redirectAttributes.addFlashAttribute("uuid", uuidName);
-        return "redirect:uploadSuccess";
+        StringBuffer requestUrl = request.getRequestURL();
+        redirectAttributes.addFlashAttribute("url", requestUrl.substring(0, requestUrl.length() - "/fileupload".length()));
+        return "redirect:fileupload";
+        //return "redirect:uploadSuccess";
     }
 
     /**
      * AJAX Upload file for transfer.
      */
-    /*
-    @RequestMapping(value = "/fileupload", method = RequestMethod.POST, params="ajaxupload=1")
-    public String importFileWithAJAX(@RequestParam("file") MultipartFile myFile,
-                        @RequestParam("fileTTL") int fileTTL, Model model,
-                        HttpServletRequest request) throws IOException {
-
-        if (myFile == null || myFile.getOriginalFilename() == null) {
-            model.addAttribute("error", "Select a file to upload");
-            return "ajaxupload";
-        }
-        if (fileTTL > 90) {
-            model.addAttribute("error", "Invalid expiration date");
-            return "ajaxupload";
-        }
-        String uuidName = storeFile(myFile, fileTTL);
-        model.addAttribute("error", "");
-        model.addAttribute("uuid", uuidName);
-        StringBuffer requestUrl = request.getRequestURL();
-        model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/fileupload".length()));
-        return "ajaxupload";
-    }
-    */
-
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST, params="ajaxupload=1")
     public void importFileWithAJAX(@RequestParam("file") MultipartFile myFile,
                         @RequestParam("fileTTL") int fileTTL,
@@ -166,6 +146,7 @@ public class FileOpsController {
     /**
      * Page to show upload success.
      */
+    /*
     @RequestMapping(value = "/uploadSuccess")
     public String uploadResult(Model model, HttpServletRequest request) {
         String pageTitle = "File uploaded";
@@ -175,6 +156,7 @@ public class FileOpsController {
         model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/uploadSuccess".length()));
         return "uploadSuccess";
     }
+    */
 
     /**
      * Download a file.

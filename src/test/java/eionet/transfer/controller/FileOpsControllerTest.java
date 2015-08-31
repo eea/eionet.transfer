@@ -90,8 +90,8 @@ public class FileOpsControllerTest {
                 .file("file", "ABCDEF".getBytes("UTF-8"))
                 .param("fileTTL", "10").with(csrf()).with(user("admin").roles("ADMIN")))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("uploadSuccess"))
-                .andExpect(flash().attributeCount(1));
+                .andExpect(redirectedUrl("fileupload"))
+                .andExpect(flash().attributeCount(2));
     }
 
     /**
