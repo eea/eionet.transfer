@@ -16,10 +16,10 @@
         You can send these links to your friends, any friend who knows this link will be able to download your file.
         </p>
         <h3>Direct Download Link</h3>
-        <pre th:text="${url} + '/download/'+${uuid}">http://xyz/download/UUID</pre>
+        <pre id="downloadlink" th:text="${url} + '/download/'+${uuid}">http://xyz/download/UUID</pre>
 
         <h3>Remove Link (use this link to remove your file)</h3>
-        <pre th:text="${url} + '/delete/'+${uuid}">http://xyz/delete/UUID</pre>
+        <pre id="deletelink" th:text="${url} + '/delete/'+${uuid}">http://xyz/delete/UUID</pre>
         <p>
         Return to <a href="index.html" th:href="@{/}">Home</a>.
         </p>

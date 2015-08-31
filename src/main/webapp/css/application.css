@@ -1,9 +1,26 @@
 
 progress:not([value]) {
-   /* Styling here */
+  display: none;
 }
 
 progress[value] {
+  display: block;
   width: 250px;
   height: 20px;
+}
+
+#uploadprogress {
+  padding: 1em;
+  margin: 1em;
+  border: 1px solid black;
+  background-color: #dddddd;
+  display: none;
+}
+
+#uploadcomplete {
+  display: none;
+  padding: 1em;
+  margin: 1em;
+  border: 1px solid black;
+  background-color: #80ff80;
 }

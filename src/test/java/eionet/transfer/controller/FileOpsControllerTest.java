@@ -94,6 +94,19 @@ public class FileOpsControllerTest {
     }
 
     /**
+     * This upload is expected to succeed.
+     */
+    @Test
+    public void goodAjaxUpload() throws Exception {
+        mockMvc.perform(fileUpload("/fileupload")
+                .file("file", "ABCDEF".getBytes("UTF-8"))
+                .param("ajaxupload", "1")
+                .param("fileTTL", "10")
+                .with(csrf()).with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"));
+    }
+    /**
      * This upload attempt has no CSRF token.
      */
     @Test

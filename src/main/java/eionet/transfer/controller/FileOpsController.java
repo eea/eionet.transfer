@@ -6,6 +6,7 @@ import eionet.transfer.model.Upload;
 import eionet.transfer.util.BreadCrumbs;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,7 @@ public class FileOpsController {
      */
     @RequestMapping(value = "/fileupload")
     public String fileUpload(Model model) {
-        String pageTitle = "Upload file";
+        String pageTitle = "Transfer file";
         model.addAttribute("title", pageTitle);
         BreadCrumbs.set(model, pageTitle);
         return "fileupload";
@@ -73,6 +74,59 @@ public class FileOpsController {
         String uuidName = storeFile(myFile, fileTTL);
         redirectAttributes.addFlashAttribute("uuid", uuidName);
         return "redirect:uploadSuccess";
+    }
+
+    /**
+     * AJAX Upload file for transfer.
+     */
+    /*
+    @RequestMapping(value = "/fileupload", method = RequestMethod.POST, params="ajaxupload=1")
+    public String importFileWithAJAX(@RequestParam("file") MultipartFile myFile,
+                        @RequestParam("fileTTL") int fileTTL, Model model,
+                        HttpServletRequest request) throws IOException {
+
+        if (myFile == null || myFile.getOriginalFilename() == null) {
+            model.addAttribute("error", "Select a file to upload");
+            return "ajaxupload";
+        }
+        if (fileTTL > 90) {
+            model.addAttribute("error", "Invalid expiration date");
+            return "ajaxupload";
+        }
+        String uuidName = storeFile(myFile, fileTTL);
+        model.addAttribute("error", "");
+        model.addAttribute("uuid", uuidName);
+        StringBuffer requestUrl = request.getRequestURL();
+        model.addAttribute("url", requestUrl.substring(0, requestUrl.length() - "/fileupload".length()));
+        return "ajaxupload";
+    }
+    */
+
+    @RequestMapping(value = "/fileupload", method = RequestMethod.POST, params="ajaxupload=1")
+    public void importFileWithAJAX(@RequestParam("file") MultipartFile myFile,
+                        @RequestParam("fileTTL") int fileTTL,
+                        HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        if (myFile == null || myFile.getOriginalFilename() == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Select a file to upload");
+            return;
+        }
+        if (fileTTL > 90) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Invalid expiration date");
+            return;
+        }
+        String uuidName = storeFile(myFile, fileTTL);
+        response.setContentType("text/xml");
+        PrintWriter printer = response.getWriter();
+        StringBuffer requestUrl = request.getRequestURL();
+        String url = requestUrl.substring(0, requestUrl.length() - "/fileupload".length());
+        printer.println("<?xml version='1.0'?>");
+        printer.println("<package>");
+        printer.println("<downloadLink>" + url + "/download/" + uuidName + "</downloadLink>");
+        printer.println("<deleteLink>" + url + "/delete/" + uuidName + "</deleteLink>");
+        printer.println("</package>");
+        printer.flush();
+        response.flushBuffer();
     }
 
     private String storeFile(MultipartFile myFile, int fileTTL) throws IOException {
