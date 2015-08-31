@@ -26,6 +26,7 @@
 		<property name="suffix" value=".html" />
 		<property name="templateMode" value="HTML5" />
 		<property name="cacheable" value="true" />
+                <property name="characterEncoding" value="UTF-8"/>
 	</bean>
 
 	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
@@ -44,6 +45,7 @@
 		<property name="templateEngine" ref="templateEngine" />
 		<property name="order" value="1" />
 		<property name="viewNames" value="*" />
+                <property name="contentType" value="text/html;charset=UTF-8"/>
 	</bean>
 
 	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/views directory -->

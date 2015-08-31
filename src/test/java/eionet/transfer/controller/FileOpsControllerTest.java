@@ -66,7 +66,8 @@ public class FileOpsControllerTest {
         this.mockMvc.perform(get("/fileupload").with(user("admin")))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("breadcrumbs"))
-                .andExpect(view().name("fileupload"));
+                .andExpect(view().name("fileupload"))
+                .andExpect(content().contentType("text/html;charset=UTF-8"));
     }
 
     /**
