@@ -110,7 +110,6 @@
       function uploadComplete(evt) {
         /* This event is raised when the server sends back a response */
         var xmlDocument = evt.target.responseXML;
-        alert(evt.target.responseText);
 
         var downloadLink = xmlDocument.documentElement.getElementsByTagName("downloadLink")[0];
         var downloadchild = document.getElementById('downloadlink');

@@ -28,7 +28,8 @@
     <bean id="initialUser" class="eionet.transfer.dao.InitialUser"
         depends-on="org.h2.tools.Server" init-method="createUser">
         <property name="userManagementService" ref="userService"/>
-        <property name="initialUser" value="prevert"/>
+        <property name="initialUsername" value="${initial.username}"/>
+        <property name="initialPassword" value="${initial.password}"/>
     </bean>
 
 </beans>

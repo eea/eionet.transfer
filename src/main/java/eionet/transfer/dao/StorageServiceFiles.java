@@ -15,24 +15,24 @@ public class StorageServiceFiles implements StorageService {
     /**
      * The directory location where to store the uploaded files.
      */
-    private String dirFolder;
+    private String storageDir;
 
-    public void setDirFolder(String dirFolder) {
-        this.dirFolder = dirFolder;
+    public void setStorageDir(String storageDir) {
+        this.storageDir = storageDir;
     }
 
     /**
      * Experimental method to show the user the max upload size.
      */
     public long getFreeSpace() {
-        return new File(dirFolder).getFreeSpace();
+        return new File(storageDir).getFreeSpace();
     }
 
     @Override
     public String save(MultipartFile myFile) throws IOException {
-        assert dirFolder != null;
+        assert storageDir != null;
         String uuidName = UUID.randomUUID().toString();
-        File destination = new File(dirFolder, uuidName);
+        File destination = new File(storageDir, uuidName);
         myFile.transferTo(destination);
         return uuidName;
     }
@@ -40,13 +40,13 @@ public class StorageServiceFiles implements StorageService {
 
     @Override
     public InputStream getById(String uuidName) throws IOException {
-        File location = new File(dirFolder, uuidName);
+        File location = new File(storageDir, uuidName);
         return new FileInputStream(location);
     }
 
     @Override
     public boolean deleteById(String uuidName) throws IOException {
-        File location = new File(dirFolder, uuidName);
+        File location = new File(storageDir, uuidName);
         return location.delete();
     }
 }

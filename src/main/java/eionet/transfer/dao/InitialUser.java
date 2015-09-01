@@ -31,9 +31,7 @@ import java.util.ArrayList;
  */
 public class InitialUser {
 
-    /**
-     * Service for user management.
-     */
+    /** * Service for user management.  */
     private UserManagementService userManagementService;
 
     public void setUserManagementService(UserManagementService userManagementService) {
@@ -41,29 +39,39 @@ public class InitialUser {
     }
 
     /** Inital username. Injected from configuration. */
-    private String initialUser;
+    private String initialUsername;
 
-    public void setInitialUser(String initialUser) {
-        this.initialUser = initialUser;
+    public void setInitialUsername(String initialUsername) {
+        this.initialUsername = initialUsername;
+    }
+
+    /** Inital user's password. Injected from configuration. */
+    private String initialPassword;
+
+    public void setInitialPassword(String initialPassword) {
+        this.initialPassword = initialPassword;
     }
 
     private Log logger = LogFactory.getLog(InitialUser.class);
 
     /**
-     * Adds new user to database when bean is constructed.
+     * Adds new user to database when bean is constructed. In the XML configuration
+     * for the bean add the attribute init-method="createUser".
      */
     public void createUser() {
-        if (initialUser == null || initialUser.trim().equals("")) {
-            logger.warn("No initial user to create");
-            return; // Nothing to do
+        if (initialUsername == null || initialUsername.trim().equals("")) {
+            logger.info("No initial user to create");
+            return;
         }
-        if (!userManagementService.userExists(initialUser)) {
+        if (!userManagementService.userExists(initialUsername)) {
             ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>(1);
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            User userDetails = new User(initialUser, "", grantedAuthorities);
+            User userDetails = new User(initialUsername, initialPassword, grantedAuthorities);
             userManagementService.createUser(userDetails);
+            logger.info("Initial user " + initialUsername + " created");
+        } else {
+            logger.info("Initial user " + initialUsername + " exists already");
         }
-        logger.warn("Initial user " + initialUser + " created");
     }
 
 }

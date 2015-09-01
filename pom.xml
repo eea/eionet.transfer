@@ -57,6 +57,7 @@
                 <version>3.0</version>
                 <inherited>true</inherited>
                 <configuration>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <verbose>false</verbose>
                     <fork>false</fork>
                     <compilerVersion>${java_version}</compilerVersion>
