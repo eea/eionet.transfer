@@ -16,6 +16,7 @@ public class BreadCrumbsTest {
         ExtendedModelMap testModel = new ExtendedModelMap();
         BreadCrumbs.set(testModel);
         assertTrue(testModel.containsAttribute("breadcrumbs"));
+        @SuppressWarnings("unchecked")
         List<BreadCrumb> breadcrumbList = (List<BreadCrumb>) testModel.get("breadcrumbs");
         assertEquals(1, breadcrumbList.size());
     }
@@ -25,6 +26,7 @@ public class BreadCrumbsTest {
         ExtendedModelMap testModel = new ExtendedModelMap();
         BreadCrumbs.set(testModel, new BreadCrumb("/about", "About E-PRTR"));
         assertTrue(testModel.containsAttribute("breadcrumbs"));
+        @SuppressWarnings("unchecked")
         List<BreadCrumb> breadcrumbList = (List<BreadCrumb>) testModel.get("breadcrumbs");
         assertEquals(2, breadcrumbList.size());
     }
