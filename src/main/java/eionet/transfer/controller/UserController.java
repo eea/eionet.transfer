@@ -9,15 +9,13 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * The Original Code is Web Questionnaires 2
+ * The Original Code is Web Transfer 1.0
  *
  * The Initial Owner of the Original Code is European Environment
- * Agency. Portions created by TripleDev are Copyright
- * (C) European Environment Agency.  All Rights Reserved.
+ * Agency. All Rights Reserved.
  *
  * Contributor(s):
- *        Anton Dmitrijev
- *        Raptis Dimos
+ *        Søren Roug
  */
 package eionet.transfer.controller;
 
@@ -86,10 +84,9 @@ public class UserController {
 
     /**
      * Adds new user to database.
-     * @param userName user name
-     * @param role role
-     * @param model model
-     * @return view name
+     * @param user user name
+     * @param redirectAttributes
+     * @return view name or redirection
      */
     @RequestMapping("/add")
     public String addUser(Authorisation user, RedirectAttributes redirectAttributes) {
@@ -145,7 +142,7 @@ public class UserController {
      * Save user record to database.
      *
      * @param user
-     * @param role
+     * @param bindingResult
      * @param model
      * @return view name
      */
@@ -162,7 +159,7 @@ public class UserController {
     }
 
     /**
-     * Deletes user
+     * Deletes user.
      * @param userName
      * @param model
      * @return view name
