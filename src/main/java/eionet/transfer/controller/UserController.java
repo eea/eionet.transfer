@@ -31,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -68,7 +69,7 @@ public class UserController {
     /**
      * View for all users.
      *
-     * @param model model
+     * @param model - contains attributes for the view
      * @param message
      * @return view name
      */
@@ -97,12 +98,10 @@ public class UserController {
         }
 
         ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
-        if (user.getAuthorisations() == null) {
-            redirectAttributes.addFlashAttribute("message", "Add at least one role");
-            return "redirect:view";
-        }
-        for (String authority : user.getAuthorisations()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+        if (user.getAuthorisations() != null) {
+            for (String authority : user.getAuthorisations()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+            }
         }
         User userDetails = new User(user.getUserId(), "", grantedAuthorities);
         if (userManagementService.userExists(userName)) {
@@ -111,19 +110,29 @@ public class UserController {
         }
         userManagementService.createUser(userDetails);
         redirectAttributes.addFlashAttribute("message", "User " + user.getUserId()
-                + " added with role " + user.getAuthorisations());
+                + " added with " + rolesAsString(user.getAuthorisations()));
         return "redirect:view";
+    }
+
+    private String rolesAsString(List<String> authorisations) {
+        if (authorisations == null) {
+            return "no roles";
+        } else {
+            //return String.join(", ", authorisations); // Only works on Java 8
+            return "roles " + StringUtils.collectionToDelimitedString(authorisations, ", ");
+        }
     }
 
     /**
      * Form for editing existing user.
      * @param userName
-     * @param model
+     * @param model - contains attributes for the view
      * @param message
      * @return view name
      */
     @RequestMapping("/existing")
-    public String existingUser(@RequestParam String userName, Model model, @RequestParam(required = false) String message) {
+    public String existingUser(@RequestParam String userName, Model model,
+            @RequestParam(required = false) String message) {
         model.addAttribute("userName", userName);
         BreadCrumbs.set(model, "Modify user");
         UserDetails userDetails = userManagementService.loadUserByUsername(userName);
@@ -143,25 +152,29 @@ public class UserController {
      *
      * @param user
      * @param bindingResult
-     * @param model
+     * @param model - contains attributes for the view
      * @return view name
      */
     @RequestMapping("/edit")
     public String editUser(Authorisation user, BindingResult bindingResult, ModelMap model) {
         ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
-        for (String authority : user.getAuthorisations()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+        if (user.getAuthorisations() != null) {
+            for (String authority : user.getAuthorisations()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+            }
         }
         User userDetails = new User(user.getUserId(), "", grantedAuthorities);
         userManagementService.updateUser(userDetails);
-        model.addAttribute("message", "User " + user.getUserId() + " updated with roles " + user.getAuthorisations());
+        model.addAttribute("message", "User " + user.getUserId() + " updated with "
+                + rolesAsString(user.getAuthorisations()));
         return "redirect:view";
     }
 
     /**
      * Deletes user.
+     *
      * @param userName
-     * @param model
+     * @param model - contains attributes for the view
      * @return view name
      */
     @RequestMapping("/delete")

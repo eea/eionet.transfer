@@ -25,8 +25,9 @@
             <th scope="row"><label>User roles</label></th>
             <td>
                 <div th:each="validRole : ${allRoles}">
-                    <input type="checkbox" value="ADMIN" th:field="*{authorisations}" th:value="${validRole}"/>
-                    <label for="${#ids.prev('authorisations')}" th:text="${validRole}">ADMIN</label>
+                    <input type="checkbox" value="ADMIN" id="role1"
+                    th:id="${#ids.seq('authorisations')}" th:field="*{authorisations}" th:value="${validRole}"/>
+                    <label for="role1" th:for="${#ids.prev('authorisations')}" th:text="${validRole}">ROLE_ADMIN</label>
                 </div>
             </td>
         </tr>

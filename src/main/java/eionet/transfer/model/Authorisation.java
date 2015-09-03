@@ -63,11 +63,4 @@ public class Authorisation {
         this.authorisations = authorisations;
     }
 
-    //public void setAuthorisations(String... roles) {
-    //    List<String> authorisations = new ArrayList<String>();
-    //    for (String role : roles) {
-    //        authorisations.add(role);
-    //    }
-    //    this.authorisations = authorisations;
-    //}
 }

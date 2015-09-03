@@ -24,3 +24,11 @@ progress[value] {
   border: 1px solid black;
   background-color: #80ff80;
 }
+
+.bigbutton {
+  padding: 1em;
+  margin: 1em;
+  text-align: center;
+  background-color: #80ff80;
+  font-size: 110%
+}

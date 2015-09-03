@@ -41,7 +41,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 public class UserManagementServiceJdbc extends JdbcUserDetailsManager
         implements UserManagementService, UserDetailsManager, GroupManager {
 
-    private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users";
+    private static final String DEF_GET_ALL_USERS_SQL = "SELECT * FROM users ORDER BY username";
 
     /** The users table has only the people with roles, so we fake the check as we're using CAS. */
     @Override
