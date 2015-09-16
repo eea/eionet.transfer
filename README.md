@@ -36,12 +36,25 @@ This will create a `target` subdirectory, build the code, run the tests and put 
 
 Deployment
 ----------
-The default configuration is to allow you to deploy to your own workstation directly. You install the target/transfer.war to Tomcat's webapps directory as ROOT.war. It will create an initial administrator user called 'admin'. If you want to substitute your own name, or for production deployment you can use system properties to configure the application.
+The default configuration is to allow you to deploy to your own workstation directly. You install the target/transfer.war to Tomcat's webapps directory as ROOT.war. You can make it create an initial user with administrator rights by setting system properties to configure the application.
 
-On a CentOS system you add lines to /etc/sysconfig/tomcat that looks like this:
+On a CentOS system you can start Tomcat with the environment variable JAVA_OPTS set to some value or add lines to /etc/sysconfig/tomcat that looks like this:
 ```
 JAVA_OPTS="-Dcas.service=http://transfers.com -Dinitial.username=myname"
-JAVA_OPTS="$JAVA_OPTS -Ddb.url=jdbc:h2:tcp://localhost:8043//work/transferdb -Dstorage.dir=/work"
+JAVA_OPTS="$JAVA_OPTS -Ddb.url=jdbc:h2:tcp://localhost:8043//work/transferdb -Dstorage.dir=/work -Dupload.dir=/work"
 ```
-You can modify any property in src/main/resources/application.properties or src/main/resources/cas.properties
+These are the properties you can set:
+```
+db.driver
+db.url
+db.username
+db.password
+storage.dir
+upload.dir
+initial.username
+initial.password
+cas.service
+cas.server.host
+```
+The default values are in src/main/resources/application.properties and src/main/resources/cas.properties.
 

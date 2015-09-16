@@ -59,7 +59,6 @@ public class TransferWebAppInitializer implements WebApplicationInitializer {
 
         ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(appContext));
 
-        // http://what-when-how.com/Tutorial/SpringFramework3/SpringFramework300653.html
         String location = null;
         try {
             location = System.getProperty("upload.dir", null);
