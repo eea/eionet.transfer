@@ -34,6 +34,11 @@ public interface StorageService {
     String save(MultipartFile myFile) throws IOException;
 
     /**
+     * Method to show the user the max upload size.
+     */
+    long getFreeSpace();
+
+    /**
      * Get an open stream to the stored object.
      */
     InputStream getById(String id) throws IOException;

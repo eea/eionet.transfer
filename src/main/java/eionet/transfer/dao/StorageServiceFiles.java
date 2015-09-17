@@ -43,6 +43,7 @@ public class StorageServiceFiles implements StorageService {
     /**
      * Experimental method to show the user the max upload size.
      */
+    @Override
     public long getFreeSpace() {
         return new File(storageDir).getFreeSpace();
     }
