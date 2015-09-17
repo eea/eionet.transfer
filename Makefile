@@ -1,8 +1,8 @@
-
+# Expects CentOS 7 and Tomcat 7.
 deploy:
-	mvn -Dmaven.test.skip=true clean install
+	mvn clean install
 	cp target/transfer.war /var/lib/tomcat/webapps/ROOT.war
 
-full:
-	mvn clean install
+lazy:
+	mvn -Dmaven.test.skip=true clean install
 	cp target/transfer.war /var/lib/tomcat/webapps/ROOT.war
