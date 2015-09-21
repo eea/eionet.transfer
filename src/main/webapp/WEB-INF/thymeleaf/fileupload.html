@@ -61,7 +61,9 @@
       function fileSelected() {
         var fileElem = document.getElementById('file');
         if (!fileElem.files) { // IE 9 and older
-          document.getElementById('fileName').innerHTML = 'Name: ' + fileElem.value;
+          var fileName = fileElem.value;
+          fileName = fileName.substr(Math.max(fileName.lastIndexOf('\\'), fileName.lastIndexOf('/')) + 1);
+          document.getElementById('fileName').innerHTML = 'Name: ' + fileName;
           document.getElementById('uploadprogress').style.display = "block";
           document.getElementById('uploadcomplete').style.display = "none";
           document.getElementById('submitbutton').value = "Upload";
@@ -92,14 +94,14 @@
             alert("You must first select a file");
             return false;
           }
-          document.getElementById('submitbutton').value = "Uploading..";
-          document.getElementById('submitbutton').disabled = true;
         }
         var file = fileElem.files[0];
         if (!file) {
             alert("You must first select a file");
             return false;
         }
+        document.getElementById('submitbutton').value = "Uploading..";
+        document.getElementById('submitbutton').disabled = true;
         var uploadForm = document.getElementById('uploadform');
         var formAction = uploadForm.action;
         var fd = new FormData(uploadForm);
@@ -145,10 +147,14 @@
 
       function uploadFailed(evt) {
         alert("There was an error attempting to upload the file.");
+        document.getElementById('submitbutton').value = "Upload";
+        document.getElementById('submitbutton').disabled = false;
       }
 
       function uploadCanceled(evt) {
         alert("The upload has been canceled by the user or the browser dropped the connection.");
+        document.getElementById('submitbutton').value = "Upload";
+        document.getElementById('submitbutton').disabled = false;
       }
     // ]]>
     </script>
