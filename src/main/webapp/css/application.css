@@ -32,3 +32,7 @@ progress[value] {
   background-color: #80ff80;
   font-size: 110%
 }
+
+.formrow {
+  margin: 0.5em 0;
+}

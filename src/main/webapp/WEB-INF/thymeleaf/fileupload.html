@@ -12,10 +12,11 @@
       <div id="workarea">
         <h1 th:text="${title}">Page title</h1>
         <form id="uploadform" action="fileupload.html" th:action="@{/fileupload}" method="post" enctype="multipart/form-data">
-          <div class="row">
-            <label for="file">Select a file to upload</label>
+          <div class="formrow">
+            <label for="file">Select a file to upload:</label>
             <input type="file" name="file" id="file" onchange="fileSelected();"/>
-            <br/>
+          </div>
+          <div class="formrow">
             <label for="fileTTL">The file will be kept on the server for:</label>
             <select name="fileTTL" id="fileTTL">
               <option selected="selected" value="10">10 days</option>
@@ -29,9 +30,9 @@
             <div id="fileType"></div>
             <progress id="progressbar" max="100"><span>0</span>% uploaded</progress>
           </div>
-          <div class="row">
+          <div class="formrow">
             <p>Click this button to upload &amp; share your file</p>
-            <input type="submit" onclick="return uploadFile()" value="Upload" />
+            <input type="submit" id="submitbutton" onclick="return uploadFile()" value="Upload" />
             <p>By uploading your files, you accept our <a href="about.html" th:href="@{/about}">terms &amp; conditions</a></p>
           </div>
         </form>
@@ -58,10 +59,16 @@
     // <![CDATA[
 
       function fileSelected() {
-        var files = document.getElementById('file').files;
-        if (files.length == 0)
+        var fileElem = document.getElementById('file');
+        if (!fileElem.files) { // IE 9 and older
+          document.getElementById('fileName').innerHTML = 'Name: ' + fileElem.value;
+          document.getElementById('uploadprogress').style.display = "block";
+          document.getElementById('uploadcomplete').style.display = "none";
+          document.getElementById('submitbutton').value = "Upload";
+          document.getElementById('submitbutton').disabled = false;
           return;
-        var file = files[0];
+        }
+        var file = fileElem.files[0];
         if (file) {
           var fileSize = 0;
           if (file.size > 1024 * 1024)
@@ -79,7 +86,16 @@
       }
 
       function uploadFile() {
-        var file = document.getElementById('file').files[0];
+        var fileElem = document.getElementById('file');
+        if (!fileElem.files) { // IE 9 and older
+          if (!fileElem.value) {
+            alert("You must first select a file");
+            return false;
+          }
+          document.getElementById('submitbutton').value = "Uploading..";
+          document.getElementById('submitbutton').disabled = true;
+        }
+        var file = fileElem.files[0];
         if (!file) {
             alert("You must first select a file");
             return false;
@@ -121,10 +137,10 @@
         var deletechild = document.getElementById('deletelink');
         deletechild.firstChild.nodeValue = deleteLink.firstChild.nodeValue;
 
-        var progressarea = document.getElementById('uploadprogress');
-        progressarea.style.display = "none";
-        var statusarea = document.getElementById('uploadcomplete');
-        statusarea.style.display = "block";
+        document.getElementById('uploadprogress').style.display = "none";
+        document.getElementById('uploadcomplete').style.display = "block";
+        document.getElementById('submitbutton').value = "Upload";
+        document.getElementById('submitbutton').disabled = false;
       }
 
       function uploadFailed(evt) {
