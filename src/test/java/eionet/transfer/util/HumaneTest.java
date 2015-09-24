@@ -22,17 +22,20 @@ public class HumaneTest {
 
     @Test
     public void kilo() {
-        assertEquals("1.23 KB", Humane.humaneSize(1234L));
+        String expected = String.format("%.2f KB", 1.23);
+        assertEquals(expected, Humane.humaneSize(1234L));
     }
 
     @Test
     public void kiloRoundUp() {
-        assertEquals("1.46 KB", Humane.humaneSize(1456L));
+        String expected = String.format("%.2f KB", 1.46);
+        assertEquals(expected, Humane.humaneSize(1456L));
     }
 
     @Test
     public void kilo10() {
-        assertEquals("14.6 KB", Humane.humaneSize(14560L));
+        String expected = String.format("%.1f KB", 14.6);
+        assertEquals(expected, Humane.humaneSize(14560L));
     }
 
     @Test
@@ -42,17 +45,20 @@ public class HumaneTest {
 
     @Test
     public void mega() {
-        assertEquals("1.46 MB", Humane.humaneSize(1456000L));
+        String expected = String.format("%.2f MB", 1.46);
+        assertEquals(expected, Humane.humaneSize(1456000L));
     }
 
     @Test
     public void mega10() {
-        assertEquals("14.6 MB", Humane.humaneSize(14560000L));
+        String expected = String.format("%.1f MB", 14.6);
+        assertEquals(expected, Humane.humaneSize(14560000L));
     }
 
     @Test
     public void giga() {
-        assertEquals("1.46 GB", Humane.humaneSize(1456000000L));
+        String expected = String.format("%.2f GB", 1.46);
+        assertEquals(expected, Humane.humaneSize(1456000000L));
     }
 
     @Test
