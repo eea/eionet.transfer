@@ -13,36 +13,39 @@
         <h1 th:text="${title}">Page title here</h1>
         <div th:if="${#lists.isEmpty(uploads)}">Table is empty.</div>
         <div th:if="${not #lists.isEmpty(uploads)}">
-          <table class="datatable">
-            <thead>
-              <tr>
-                <th>Identifier</th>
-                <th>File name</th>
-                <th>Expires</th>
-                <th>Size</th>
-                <th>Uploader</th>
-                <th>Operation</th>
-              </tr>
-            </thead>
-            <tbody th:remove="all-but-first">
-              <tr th:each="uploads : ${uploads}">
-                <td><a th:href="@{'/download/'+${uploads.id}}" href="#" th:text="${uploads.id}">99999</a></td>
-                <td th:text="${uploads.filename}">Long realistic file name</td>
-                <td th:text="${uploads.expires}">2014-11-29</td>
-                <td th:text="${uploads.humaneSize}">8932893</td>
-                <td th:text="${uploads.uploader}">uploader</td>
-                <td><a th:href="@{'/delete/'+${uploads.id}}" href="#">Delete</a>
-                </td>
-              </tr>
-              <tr>
-                <td>88888</td>
-                <td>Filename.txt</td>
-                <td>2015-05-29</td>
-                <td>2992929</td>
-                <td>johnny</td>
-              </tr>
-            </tbody>
-          </table>
+          <form action="#" th:action="@{/deletefiles}" method="POST">
+            <table class="datatable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Identifier</th>
+                  <th>File name</th>
+                  <th>Expires</th>
+                  <th>Size</th>
+                  <th>Uploader</th>
+                </tr>
+              </thead>
+              <tbody th:remove="all-but-first">
+                <tr th:each="upload : ${uploads}">
+                  <td><input type="checkbox" name="id" th:name="id" th:value="${upload.id}"/>
+                  <td><a th:href="@{'/download/'+${upload.id}}" href="#" th:text="${upload.id}">99999</a></td>
+                  <td th:text="${upload.filename}">Long realistic file name</td>
+                  <td th:text="${upload.expires}">2014-11-29</td>
+                  <td th:text="${upload.humaneSize}">8932893</td>
+                  <td th:text="${upload.uploader}">uploader</td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>88888</td>
+                  <td>Filename.txt</td>
+                  <td>2015-05-29</td>
+                  <td>2992929</td>
+                  <td>johnny</td>
+                </tr>
+              </tbody>
+            </table>
+            <div><input type="submit" value="Delete"/></div>
+          </form>
         </div>
       </div>
       <!-- workarea -->

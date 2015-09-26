@@ -224,5 +224,21 @@ public class FileOpsController {
         redirectAttributes.addFlashAttribute("message", "File deleted");
         return "redirect:/";
     }
+
+    /**
+     * Delete files by uuid.
+     *
+     * @param ids - list of uuids
+     */
+    @RequestMapping(value = "/deletefiles", method = RequestMethod.POST)
+    public String deleteFiles(@RequestParam("id") List<String> ids,
+            final RedirectAttributes redirectAttributes) throws IOException {
+        for (String fileId : ids) {
+            uploadsService.deleteById(fileId);
+            storageService.deleteById(fileId);
+        }
+        redirectAttributes.addFlashAttribute("message", "File(s) deleted");
+        return "redirect:/";
+    }
 }
 
