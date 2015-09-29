@@ -218,11 +218,9 @@ public class FileOpsController {
 
     @RequestMapping(value = "/delete/{file_name}")
     public String deleteFile(
-        @PathVariable("file_name") String fileId, final RedirectAttributes redirectAttributes) throws IOException {
-        uploadsService.deleteById(fileId);
-        storageService.deleteById(fileId);
-        redirectAttributes.addFlashAttribute("message", "File deleted");
-        return "redirect:/";
+        @PathVariable("file_name") String fileId, final Model model) throws IOException {
+        model.addAttribute("uuid", fileId);
+        return "deleteConfirmation";
     }
 
     /**
