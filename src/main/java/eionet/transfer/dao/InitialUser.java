@@ -18,6 +18,7 @@
  */
 package eionet.transfer.dao;
 
+import eionet.transfer.model.UserRole;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,7 +65,9 @@ public class InitialUser {
         }
         if (!userManagementService.userExists(initialUsername)) {
             ArrayList<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<SimpleGrantedAuthority>(1);
-            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            for (UserRole authority : UserRole.values()) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(authority.toString()));
+            }
             User userDetails = new User(initialUsername, initialPassword, grantedAuthorities);
             userManagementService.createUser(userDetails);
             logger.info("Initial user " + initialUsername + " created");

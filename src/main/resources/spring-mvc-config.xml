@@ -10,6 +10,8 @@
         <mvc:resources location="/images/" mapping="/images/**"/>
         <mvc:resources location="/css/" mapping="/css/**"/>
         <mvc:resources location="/js/" mapping="/js/**"/>
+        <mvc:resources location="/robots.txt" mapping="/robots.txt"/>
+        <mvc:resources location="/favicon.ico" mapping="/favicon.ico"/>
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
 	<context:component-scan base-package="eionet.transfer" />
