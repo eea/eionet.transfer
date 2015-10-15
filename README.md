@@ -51,7 +51,7 @@ db.username
 db.password
 storage.dir
 upload.dir
-initial.username
+initial.username # Not needed when integrated with CAS.
 initial.password
 cas.service
 cas.server.host
