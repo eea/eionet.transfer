@@ -8,7 +8,9 @@
     <packaging>war</packaging>
 
     <properties>
+        <docker.skip>true</docker.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <env>local</env>
         <java_version>1.7</java_version>
         <spring.version>4.1.6.RELEASE</spring.version>
@@ -130,6 +132,65 @@
                         </resource>
                     </webResources>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>net.wouterdanes.docker</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>package</id>
+                        <goals>
+                            <goal>build-images</goal>
+                        </goals>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <id>app</id>
+                                        <dockerFile>${project.basedir}/src/main/docker/Dockerfile</dockerFile>
+                                    <artifacts>
+                                            <artifact>
+                                            <file>${project.build.directory}/transfer.war</file>
+                                            </artifact>
+                                    </artifacts>
+                                </image>
+                            </images>
+                        </configuration>
+                    </execution>
+<!--
+                    <execution>
+                        <id>start</id>
+                        <goals>
+                            <goal>start-containers</goal>
+                        </goals>
+                        <configuration>
+                            <containers>
+                                <container>
+                                    <id>app</id>
+                                    <image>app</image>
+                                    <env>
+                                        <APP_MESSAGE>Hello, world!</APP_MESSAGE>
+                                    </env>
+                                    <waitForStartup>Ratpack started for</waitForStartup>
+                                </container>
+                            </containers>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop</id>
+                        <goals>
+                            <goal>stop-containers</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+-->
+                </executions>
             </plugin>
 
 
