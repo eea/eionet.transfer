@@ -34,8 +34,24 @@ cp target/transfer.war /var/lib/tomcat/webapps/ROOT.war
 
 This will create a `target` subdirectory, build the code, run the tests and put a WAR file in target. You then deploy this file to Tomcat. It contains an embedded database.
 
-Deployment
-----------
+Building a Docker image
+-----------------------
+
+It is possible to build, test and push a Docker image to EEA's Docker registry. To do so you activate the `docker` profile. The `install` goal will do a test start up of the container. The `docker:push` will push the Docker image to dockerrepo.eionet.europa.eu:5000.
+```
+mvn -Pdocker install docker:push
+```
+To use `docker:push` you must have an account and add these lines to your `~/.m2/settings.xml`:
+```
+<server>
+  <id>dockerrepo.eionet.europa.eu:5000</id>
+  <username>{account}</username>
+  <password>{password}</password>
+</server>
+```
+
+Deployment of WAR file
+----------------------
 The default configuration is to allow you to deploy to your own workstation directly. You install the target/transfer.war to Tomcat's webapps directory as ROOT.war. You can make it create an initial user with administrator rights by setting system properties to configure the application.
 
 On a CentOS system you can start Tomcat with the environment variable JAVA_OPTS set to some value or add lines to /etc/sysconfig/tomcat that looks like this:

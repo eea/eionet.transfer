@@ -8,7 +8,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <docker.skip>true</docker.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <env>local</env>
@@ -19,6 +18,7 @@
         <thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
         <checkstyle.config.location>${basedir}/doc/checkstyle.xml</checkstyle.config.location>
         <liquibase.changeLogFile>database/database-struct.xml</liquibase.changeLogFile>
+        <docker.maven.plugin.rhuss.version>0.13.4</docker.maven.plugin.rhuss.version>
     </properties>
 
     <version>1.0-SNAPSHOT</version>
@@ -133,66 +133,6 @@
                     </webResources>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>net.wouterdanes.docker</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>package</id>
-                        <goals>
-                            <goal>build-images</goal>
-                        </goals>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <id>app</id>
-                                        <dockerFile>${project.basedir}/src/main/docker/Dockerfile</dockerFile>
-                                    <artifacts>
-                                            <artifact>
-                                            <file>${project.build.directory}/transfer.war</file>
-                                            </artifact>
-                                    </artifacts>
-                                </image>
-                            </images>
-                        </configuration>
-                    </execution>
-<!--
-                    <execution>
-                        <id>start</id>
-                        <goals>
-                            <goal>start-containers</goal>
-                        </goals>
-                        <configuration>
-                            <containers>
-                                <container>
-                                    <id>app</id>
-                                    <image>app</image>
-                                    <env>
-                                        <APP_MESSAGE>Hello, world!</APP_MESSAGE>
-                                    </env>
-                                    <waitForStartup>Ratpack started for</waitForStartup>
-                                </container>
-                            </containers>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop</id>
-                        <goals>
-                            <goal>stop-containers</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
--->
-                </executions>
-            </plugin>
-
 
             <!-- Update database tables -->
 
@@ -507,4 +447,116 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <profile>
+          <id>docker</id>
+          <build>
+            <plugins>
+              <plugin>
+                <!-- The Docker Maven plugin is used to create docker image with the fat jar -->
+                <groupId>org.jolokia</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.maven.plugin.rhuss.version}</version>
+                <configuration>
+                  <verbose>true</verbose>
+                  <dockerHost>tcp://127.0.0.1:2375</dockerHost>
+                  <logDate>default</logDate>
+                  <autoPull>true</autoPull>
+                  <images>
+                    <!-- Image holding the artifact of this build -->
+                    <image>
+                      <!-- Alias name which can used for linking containers during runtime -->
+                      <alias>service</alias>
+                      <name>${project.artifactId}:latest</name>
+                      <registry>dockerrepo.eionet.europa.eu:5000</registry>
+                      <!-- ....................................... -->
+                      <!-- Build configuration for creating images -->
+                      <!-- ....................................... -->
+                      <build>
+                        <from>tomcat:7-jre7</from>
+                        <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
+                        <!-- Assembly descriptor holds the reference to the created artifact-->
+                        <assembly>
+                          <!--
+                          <dockerFileDir>.</dockerFileDir>
+                          <descriptorRef>artifact</descriptorRef>
+                          -->
+                          <descriptor>assembly.xml</descriptor>
+                        </assembly>
+                        <runCmds>
+                          <run>rm -rf /usr/local/tomcat/webapps/*</run>
+                          <run>mv /maven/transfer.war /usr/local/tomcat/webapps/ROOT.war</run>
+                          <run>mv /maven/jolokia.war /usr/local/tomcat/webapps/jolokia.war</run>
+                        </runCmds>
+
+                        <!-- Expose ports -->
+                        <ports>
+                          <port>8080</port>
+                        </ports>
+                        <!-- Default command for the build image -->
+                        <!--<cmd>catalina.sh run</cmd> -->
+                      </build>
+
+                      <!-- ............................................................... -->
+                      <!-- Runtime configuration for starting/stopping/linking containers -->
+                      <!-- ............................................................... -->
+                      <run>
+                        <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                        <ports>
+                          <port>tomcat.port:8080</port>
+                        </ports>
+                        <wait>
+                          <!-- Check for this URL to return a 200 return code .... -->
+                          <url>http://${docker.host.address}:${tomcat.port}/about</url>
+                          <!-- ... but at max 60 seconds -->
+                          <time>60000</time>
+                        </wait>
+                        <log>
+                          <prefix>TC</prefix>
+                          <color>cyan</color>
+                        </log>
+                      </run>
+                    </image>
+                  </images>
+                </configuration>
+
+                <!-- Hooking into the lifecycle -->
+                <executions>
+                  <execution>
+                    <id>start</id>
+                    <phase>pre-integration-test</phase>
+                    <goals>
+                      <goal>build</goal>
+                      <goal>start</goal>
+                    </goals>
+                  </execution>
+                  <execution>
+                    <id>stop</id>
+                    <phase>post-integration-test</phase>
+                    <goals>
+                      <goal>stop</goal>
+                    </goals>
+                  </execution>
+                </executions>
+              </plugin>
+
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                  <systemPropertyVariables>
+                    <log.url>http://${docker.host.address}:${tomcat.port}/jolokia</log.url>
+                  </systemPropertyVariables>
+                </configuration>
+              </plugin>
+
+            </plugins>
+          </build>
+          <activation>
+            <activeByDefault/>
+          </activation>
+        </profile>
+    </profiles>
 </project>
