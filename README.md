@@ -37,7 +37,7 @@ This will create a `target` subdirectory, build the code, run the tests and put 
 Building a Docker image
 -----------------------
 
-It is possible to build, test and push a Docker image to EEA's Docker registry. To do so you activate the `docker` profile. The `install` goal will do a test start up of the container. The `docker:push` will push the Docker image to dockerrepo.eionet.europa.eu:5000.
+It is possible to build, test and push a Docker image of Eionet transfer to EEA's Docker registry. The image includes Jolokia for integration into the monitoring system. To do so you activate the `docker` profile. The `install` goal will do a test start up of the container. The `docker:push` will push the Docker image to dockerrepo.eionet.europa.eu:5000.
 ```
 mvn -Pdocker install docker:push
 ```
