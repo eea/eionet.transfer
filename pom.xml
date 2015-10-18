@@ -489,7 +489,7 @@
                       <!-- Build configuration for creating images -->
                       <!-- ....................................... -->
                       <build>
-                        <from>tomcat:7-jre7</from>
+                        <from>tomcat:8.0.28-jre7</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
                         <!-- Assembly descriptor holds the reference to the created artifact-->
                         <assembly>
