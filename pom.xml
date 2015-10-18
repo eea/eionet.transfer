@@ -483,7 +483,7 @@
                     <image>
                       <!-- Alias name which can used for linking containers during runtime -->
                       <alias>service</alias>
-                      <name>${project.artifactId}:latest</name>
+                      <name>${project.artifactId}</name>
                       <registry>dockerrepo.eionet.europa.eu:5000</registry>
                       <!-- ....................................... -->
                       <!-- Build configuration for creating images -->
@@ -491,6 +491,10 @@
                       <build>
                         <from>tomcat:8.0.28-jre7</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
+                        <tags>
+                          <tag>latest</tag>
+                          <tag>${project.version}</tag>
+                        </tags>
                         <!-- Assembly descriptor holds the reference to the created artifact-->
                         <assembly>
                           <!--
