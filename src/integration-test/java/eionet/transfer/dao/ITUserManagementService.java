@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class UserManagementServiceTest {
+public class ITUserManagementService {
  
     private UserDetailsManager userManagementService;
 
@@ -22,7 +22,7 @@ public class UserManagementServiceTest {
 
     @Before
     public void loadContext() {
-        ctx = new ClassPathXmlApplicationContext("spring-dbtest-config.xml");
+        ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
          
         userManagementService = ctx.getBean("userService", UserManagementService.class);
     }

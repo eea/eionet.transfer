@@ -6,14 +6,6 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
 	
-    <bean id="org.h2.tools.Server"
-                class="org.h2.tools.Server"
-                factory-method="createTcpServer"
-                init-method="start"
-                destroy-method="stop">
-        <constructor-arg value="-tcp,-tcpAllowOthers,-tcpPort,8043" />
-    </bean>
-
     <!-- Run database refactorings at startup using Liquibase -->
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
         <property name="dataSource" ref="dataSource" />
@@ -26,7 +18,7 @@
     </bean>
 
     <bean id="initialUser" class="eionet.transfer.dao.InitialUser"
-        depends-on="org.h2.tools.Server" init-method="createUser">
+        init-method="createUser">
         <property name="userManagementService" ref="userService"/>
         <property name="initialUsername" value="${initial.username}"/>
         <property name="initialPassword" value="${initial.password}"/>

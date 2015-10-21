@@ -22,17 +22,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:spring-mvctest-config.xml",
-        "classpath:spring-dbtest-config.xml",
-        "classpath:spring-securitytest-config.xml"})
+@ContextConfiguration(locations = {"classpath:spring-mvc-config.xml",
+        "classpath:spring-db-config.xml",
+        "classpath:spring-security.xml"})
 
 /**
  * Test the file operations.
- *
- * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.BUILD-SNAPSHOT/reference/htmlsingle/#spring-mvc-test-framework">MVC testing</a>
- * @see <a href="http://docs.spring.io/spring-framework/docs/3.2.0.RC2/api/org/springframework/test/web/servlet/ResultActions.html">Result Actions</a>
  */
-public class FileOpsControllerTest {
+public class ITFileOpsController {
 
     @Autowired
     private WebApplicationContext wac;

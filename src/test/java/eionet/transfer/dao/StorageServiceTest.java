@@ -30,7 +30,7 @@ public class StorageServiceTest {
     @Test
     public void simpleTest() throws Exception {
         //Get the Spring Context
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-dbtest-config.xml");
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
          
         //Get the StorageService Bean from the context.
         StorageService storageService = ctx.getBean("storageService", StorageService.class);

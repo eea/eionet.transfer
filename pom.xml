@@ -17,7 +17,7 @@
         <tiles.version>3.0.1</tiles.version>
         <thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
         <checkstyle.config.location>${basedir}/doc/checkstyle.xml</checkstyle.config.location>
-        <liquibase.changeLogFile>database/database-struct.xml</liquibase.changeLogFile>
+        <!-- <liquibase.changeLogFile>database/database-struct.xml</liquibase.changeLogFile> -->
         <docker.maven.plugin.rhuss.version>0.13.4</docker.maven.plugin.rhuss.version>
     </properties>
 
@@ -144,6 +144,7 @@
 
             <!-- Update database tables -->
 
+<!--
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -159,7 +160,7 @@
                         <configuration>
                             <skip>${maven.test.skip}</skip>
                             <propertyFile>target/test-classes/liquibase.properties</propertyFile>
-                            <!-- <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase> -->
+                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                         </configuration>
                         <goals>
                             <goal>dropAll</goal>
@@ -168,7 +169,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+-->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -354,7 +355,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.3.172</version>
+            <version>1.4.190</version>
         </dependency>
 
         <dependency>
@@ -470,12 +471,48 @@
           <build>
             <plugins>
               <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.9.1</version>
+                <executions>
+                  <execution>
+                    <id>add-integration-test-sources</id>
+                    <phase>generate-test-sources</phase>
+                    <goals>
+                      <goal>add-test-source</goal>
+                    </goals>
+                    <configuration>
+                      <!-- Configures the source directory of our integration tests -->
+                      <sources>
+                        <source>src/integration-test/java</source>
+                      </sources>
+                    </configuration>
+                  </execution>
+                  <execution>
+                    <id>add-integration-test-resources</id>
+                    <phase>generate-test-resources</phase>
+                    <goals>
+                      <goal>add-test-resource</goal>
+                    </goals>
+                    <configuration>
+                      <!-- Configures the resource directory of our integration tests -->
+                      <resources>
+                        <resource>
+                          <filtering>false</filtering>
+                          <directory>src/integration-test/resources</directory>
+                        </resource>
+                      </resources>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+              <plugin>
                 <!-- The Docker Maven plugin is used to create docker image with the fat jar -->
                 <groupId>org.jolokia</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker.maven.plugin.rhuss.version}</version>
                 <configuration>
-                  <verbose>true</verbose>
+                  <verbose>false</verbose>
                   <logDate>default</logDate>
                   <autoPull>true</autoPull>
                   <images>
@@ -495,16 +532,11 @@
                           <tag>latest</tag>
                           <tag>${project.version}</tag>
                         </tags>
-                        <!-- Assembly descriptor holds the reference to the created artifact-->
                         <assembly>
-                          <!--
-                          <dockerFileDir>.</dockerFileDir>
-                          <descriptorRef>artifact</descriptorRef>
-                          -->
                           <descriptor>assembly.xml</descriptor>
                         </assembly>
                         <env>
-                          <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom</CATALINA_OPTS>
+                          <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
                         </env>
                         <runCmds>
                           <run>rm -rf /usr/local/tomcat/webapps/*</run>
@@ -515,6 +547,7 @@
                         <!-- Expose ports -->
                         <ports>
                           <port>8080</port>
+                          <port>8009</port>
                         </ports>
                         <!-- Default command for the build image -->
                         <!--<cmd>catalina.sh run</cmd> -->
@@ -534,13 +567,57 @@
                           <!-- ... but at max 60 seconds -->
                           <time>60000</time>
                         </wait>
+                        <links>
+                          <link>database</link>
+                        </links>
                         <log>
                           <prefix>TC</prefix>
                           <color>cyan</color>
                         </log>
                       </run>
                     </image>
+
+                    <image>
+                      <alias>database</alias>
+                      <name>${project.artifactId}-db</name>
+                      <registry>dockerrepo.eionet.europa.eu:5000</registry>
+                      <build>
+                        <from>java:8</from>
+                        <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
+                        <tags>
+                          <tag>latest</tag>
+                        </tags>
+                        <env>
+                          <H2_RELEASE_DATE>2015-10-11</H2_RELEASE_DATE>
+                        </env>
+                        <workdir>/tmp</workdir>
+                        <runCmds>
+                          <run>wget http://www.h2database.com/h2-$H2_RELEASE_DATE.zip &amp;&amp; \
+                               unzip h2-$H2_RELEASE_DATE.zip &amp;&amp; \
+                               rm -f h2-$H2_RELEASE_DATE.zip &amp;&amp; \
+                               mv h2 /opt
+                          </run>
+                        </runCmds>
+
+                        <!-- Expose ports -->
+                        <ports>
+                          <port>1521</port>
+                          <!-- <port>80</port> -->
+                        </ports>
+                        <cmd>java -cp /opt/h2/bin/h2*.jar org.h2.tools.Server -tcp -tcpAllowOthers -tcpPort 1521 -baseDir /var/tmp</cmd>
+                      </build>
+                      <run>
+                        <ports>
+                          <port>database.port:1521</port>
+                        </ports>
+                        <wait>
+                          <log>TCP server running at </log>
+                          <time>6000</time>
+                        </wait>
+                      </run>
+                    </image>
                   </images>
+
                 </configuration>
 
                 <!-- Hooking into the lifecycle -->
@@ -566,12 +643,21 @@
               <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>2.19</version>
                 <configuration>
                   <systemPropertyVariables>
                     <log.url>http://${docker.host.address}:${tomcat.port}/jolokia</log.url>
+                    <db.url>jdbc:h2:tcp://${docker.host.address}:${database.port}//var/tmp/transferdb</db.url>
                   </systemPropertyVariables>
                 </configuration>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>integration-test</goal>
+                      <goal>verify</goal>
+                    </goals>
+                  </execution>
+                </executions>
               </plugin>
 
             </plugins>

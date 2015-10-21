@@ -16,8 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-// See http://www.journaldev.com/2593/spring-jdbc-and-jdbctemplate-crud-with-datasource-example-tutorial
-public class UploadsServiceTest {
+public class ITUploadsService {
  
     private UploadsService uploadsService;
 
@@ -26,7 +25,7 @@ public class UploadsServiceTest {
     @Before
     public void loadContext() {
         //Get the Spring Context
-        ctx = new ClassPathXmlApplicationContext("spring-dbtest-config.xml");
+        ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
          
         //Get the UploadsService Bean from the context.
         uploadsService = ctx.getBean("uploadsService", UploadsService.class);
