@@ -460,6 +460,9 @@
     <profiles>
         <profile>
           <id>docker</id>
+          <properties>
+            <tomcat.port>4580</tomcat.port>
+          </properties>
           <dependencies>
             <dependency>
                 <groupId>eionet</groupId>
@@ -470,42 +473,6 @@
           </dependencies>
           <build>
             <plugins>
-              <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.9.1</version>
-                <executions>
-                  <execution>
-                    <id>add-integration-test-sources</id>
-                    <phase>generate-test-sources</phase>
-                    <goals>
-                      <goal>add-test-source</goal>
-                    </goals>
-                    <configuration>
-                      <!-- Configures the source directory of our integration tests -->
-                      <sources>
-                        <source>src/integration-test/java</source>
-                      </sources>
-                    </configuration>
-                  </execution>
-                  <execution>
-                    <id>add-integration-test-resources</id>
-                    <phase>generate-test-resources</phase>
-                    <goals>
-                      <goal>add-test-resource</goal>
-                    </goals>
-                    <configuration>
-                      <!-- Configures the resource directory of our integration tests -->
-                      <resources>
-                        <resource>
-                          <filtering>false</filtering>
-                          <directory>src/integration-test/resources</directory>
-                        </resource>
-                      </resources>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
               <plugin>
                 <!-- The Docker Maven plugin is used to create docker image with the fat jar -->
                 <groupId>org.jolokia</groupId>
@@ -536,7 +503,7 @@
                           <descriptor>assembly.xml</descriptor>
                         </assembly>
                         <env>
-                          <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
+                          <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Dcas.service=http://localhost:4580 -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
                         </env>
                         <runCmds>
                           <run>rm -rf /usr/local/tomcat/webapps/*</run>

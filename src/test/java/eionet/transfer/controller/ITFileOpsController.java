@@ -114,4 +114,14 @@ public class ITFileOpsController {
                 .param("fileTTL", "10").with(user("admin").roles("ADMIN")))
                 .andExpect(status().is4xxClientError());
     }
+
+    /**
+     * Attempt to download a non-existent file.
+     */
+    @Test
+    public void downloadNotFound() throws Exception {
+        mockMvc.perform(get("/download/no-such-file"))
+            .andExpect(status().isNotFound());
+    }
+
 }

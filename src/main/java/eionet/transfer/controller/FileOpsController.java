@@ -33,16 +33,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -182,10 +187,16 @@ public class FileOpsController {
     @RequestMapping(value = "/download/{file_name}", method = RequestMethod.GET)
     public void downloadFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
-        Upload uploadRec = uploadsService.getById(fileId);
+
+        Upload uploadRec;
+        try {
+            uploadRec = uploadsService.getById(fileId);
+        } catch (Exception e) {
+            throw new FileNotFoundException(fileId);
+        }
         Date today = new Date(System.currentTimeMillis());
         if (today.after(uploadRec.getExpires())) {
-            throw new IOException("File not found");
+            throw new FileNotFoundException(fileId);
         }
         InputStream is = null;
         is = storageService.getById(fileId);
@@ -238,5 +249,20 @@ public class FileOpsController {
         redirectAttributes.addFlashAttribute("message", "File(s) deleted");
         return "redirect:/";
     }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND) //, reason = "File not found")
+    public String filenotFoundError(HttpServletRequest req, Exception exception) {
+        return "filenotfound";
+    }
+    /*
+    public ModelAndView filenotFoundError(HttpServletRequest req, Exception exception) {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("exception", exception);
+        mav.addObject("url", req.getRequestURL());
+        mav.setViewName("filenotfound");
+        return mav;
+    }
+    */
 }
 
