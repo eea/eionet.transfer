@@ -487,8 +487,8 @@
                     <image>
                       <!-- Alias name which can used for linking containers during runtime -->
                       <alias>service</alias>
-                      <name>${project.artifactId}</name>
-                      <registry>dockerrepo.eionet.europa.eu:5000</registry>
+                      <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
+                      <!--<registry>dockerrepo.eionet.europa.eu:5000</registry>-->
                       <!-- ....................................... -->
                       <!-- Build configuration for creating images -->
                       <!-- ....................................... -->
@@ -546,8 +546,8 @@
 
                     <image>
                       <alias>database</alias>
-                      <name>${project.artifactId}-db</name>
-                      <registry>dockerrepo.eionet.europa.eu:5000</registry>
+                      <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}-db</name>
+                      <!-- <registry>dockerrepo.eionet.europa.eu:5000</registry> -->
                       <build>
                         <from>java:8</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
