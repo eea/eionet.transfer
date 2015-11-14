@@ -23,6 +23,7 @@ import eionet.transfer.dao.StorageService;
 import eionet.transfer.dao.UploadsService;
 import eionet.transfer.model.Upload;
 import eionet.transfer.util.BreadCrumbs;
+import eionet.transfer.util.Filenames;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -139,7 +140,7 @@ public class FileOpsController {
 
         Upload rec = new Upload();
         rec.setId(uuidName);
-        rec.setFilename(myFile.getOriginalFilename());
+        rec.setFilename(Filenames.removePath(myFile.getOriginalFilename()));
         rec.setContentType(myFile.getContentType());
         rec.setExpires(expirationDate);
         rec.setSize(myFile.getSize());

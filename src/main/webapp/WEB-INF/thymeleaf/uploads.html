@@ -14,24 +14,30 @@
         <div th:if="${#lists.isEmpty(uploads)}">Table is empty.</div>
         <div th:if="${not #lists.isEmpty(uploads)}">
           <form action="#" th:action="@{/deletefiles}" method="POST">
-            <table class="datatable">
+            <table class="datatable" style="width:100%">
+              <col style="width:1em"/>
+              <col style="width:6em"/>
+              <col/>
+              <col style="width:6em"/>
+              <col style="width:5em"/>
+              <col/>
               <thead>
                 <tr>
-                  <th></th>
-                  <th>Identifier</th>
-                  <th>File name</th>
-                  <th>Expires</th>
-                  <th>Size</th>
-                  <th>Uploader</th>
+                  <th scope="col"></th>
+                  <th scope="col">Identifier</th>
+                  <th scope="col">File name</th>
+                  <th scope="col">Expires</th>
+                  <th scope="col">Size</th>
+                  <th scope="col">Uploader</th>
                 </tr>
               </thead>
               <tbody th:remove="all-but-first">
                 <tr th:each="upload : ${uploads}">
                   <td><input type="checkbox" name="id" th:name="id" th:value="${upload.id}"/>
-                  <td><a th:href="@{'/download/'+${upload.id}}" href="#" th:text="${upload.id}">99999</a></td>
+                  <td><a th:href="@{'/download/'+${upload.id}}" href="#" th:title="'Download ' + ${upload.id}" th:text="${#strings.substring(upload.id, 0, 8)}">12345678</a></td>
                   <td th:text="${upload.filename}">Long realistic file name</td>
                   <td th:text="${upload.expires}">2014-11-29</td>
-                  <td th:text="${upload.humaneSize}">8932893</td>
+                  <td th:text="${upload.humaneSize}">893 MB</td>
                   <td th:text="${upload.uploader}">uploader</td>
                   </td>
                 </tr>

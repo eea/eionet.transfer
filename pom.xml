@@ -10,7 +10,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <env>local</env>
         <java_version>1.7</java_version>
         <spring.version>4.1.6.RELEASE</spring.version>
         <spring.security.version>4.0.2.RELEASE</spring.security.version>
@@ -54,9 +53,9 @@
         </repository>
     </repositories>
 
-    <!-- the build configuration -->
-
     <build>
+        <finalName>transfer</finalName>
+
         <plugins>
 
             <!-- Configure maven compiler -->
@@ -106,30 +105,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
                 <configuration>
-                <!--
-                    <filters>
-                        <filter>${basedir}/${env}.properties</filter>
-                    </filters>
-                -->
                     <webResources>
-                <!--
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/META-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>META-INF</targetPath>
-                            <includes>
-                                <include>context.xml</include>
-                            </includes>
-                        </resource>
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                            <includes>
-                                <include>web.xml</include>
-                            </includes>
-                        </resource>
-                -->
                         <resource>
                             <directory>${basedir}/database</directory>
                             <targetPath>WEB-INF/classes/database</targetPath>
@@ -143,33 +119,6 @@
             </plugin>
 
             <!-- Update database tables -->
-
-<!--
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <propertyFile>target/classes/liquibase.properties</propertyFile>
-                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>Update test database</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <skip>${maven.test.skip}</skip>
-                            <propertyFile>target/test-classes/liquibase.properties</propertyFile>
-                            <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                        </configuration>
-                        <goals>
-                            <goal>dropAll</goal>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
--->
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -193,14 +142,6 @@
                 </configuration>
             </plugin>
         </plugins>
-
-        <!-- filters for src/main/resources and src/test/resources -->
-
-        <!--
-        <filters>
-            <filter>${env}.properties</filter>
-        </filters>
-        -->
 
         <!-- resources for the main code -->
 
@@ -249,8 +190,6 @@
             </testResource>
         </testResources>
 
-        <!-- name of the bundled project when it is finally built -->
-        <finalName>transfer</finalName>
 
     </build>
 
@@ -321,13 +260,6 @@
             <artifactId>commons-codec</artifactId>
             <version>1.3</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -483,15 +415,9 @@
                   <logDate>default</logDate>
                   <autoPull>true</autoPull>
                   <images>
-                    <!-- Image holding the artifact of this build -->
                     <image>
-                      <!-- Alias name which can used for linking containers during runtime -->
                       <alias>service</alias>
                       <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
-                      <!--<registry>dockerrepo.eionet.europa.eu:5000</registry>-->
-                      <!-- ....................................... -->
-                      <!-- Build configuration for creating images -->
-                      <!-- ....................................... -->
                       <build>
                         <from>tomcat:8.0.28-jre7</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
@@ -503,13 +429,14 @@
                           <descriptor>assembly.xml</descriptor>
                         </assembly>
                         <env>
-                          <CATALINA_OPTS>-Djava.security.egd=file:/dev/./urandom -Dcas.service=http://localhost:4580 -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
+                          <CATALINA_OPTS>-Dinitial.username=roug -Djava.security.egd=file:/dev/./urandom -Dcas.service=http://localhost:4580 -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
                         </env>
                         <runCmds>
                           <run>rm -rf /usr/local/tomcat/webapps/*</run>
                           <run>mv /maven/transfer.war /usr/local/tomcat/webapps/ROOT.war</run>
                           <run>mv /maven/jolokia.war /usr/local/tomcat/webapps/jolokia.war</run>
                         </runCmds>
+                        <optimise>true</optimise>
 
                         <!-- Expose ports -->
                         <ports>
@@ -559,17 +486,16 @@
                         </env>
                         <workdir>/tmp</workdir>
                         <runCmds>
-                          <run>wget http://www.h2database.com/h2-$H2_RELEASE_DATE.zip &amp;&amp; \
-                               unzip h2-$H2_RELEASE_DATE.zip &amp;&amp; \
-                               rm -f h2-$H2_RELEASE_DATE.zip &amp;&amp; \
-                               mv h2 /opt
-                          </run>
+                          <run>wget http://www.h2database.com/h2-$H2_RELEASE_DATE.zip</run>
+                          <run>unzip h2-$H2_RELEASE_DATE.zip</run>
+                          <run>rm -f h2-$H2_RELEASE_DATE.zip</run>
+                          <run>mv h2 /opt</run>
                         </runCmds>
+                        <optimise>true</optimise>
 
                         <!-- Expose ports -->
                         <ports>
                           <port>1521</port>
-                          <!-- <port>80</port> -->
                         </ports>
                         <cmd>java -cp /opt/h2/bin/h2*.jar org.h2.tools.Server -tcp -tcpAllowOthers -tcpPort 1521 -baseDir /var/tmp</cmd>
                       </build>
