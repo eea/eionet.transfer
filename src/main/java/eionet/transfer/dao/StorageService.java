@@ -31,7 +31,7 @@ public interface StorageService {
     /**
      * Store the file at a location and return a generated unique identifier for it.
      */
-    String save(MultipartFile myFile) throws IOException;
+    void save(MultipartFile myFile, String uuidName) throws IOException;
 
     /**
      * Method to show the user the max upload size.

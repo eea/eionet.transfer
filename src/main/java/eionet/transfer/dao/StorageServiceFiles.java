@@ -24,11 +24,14 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service to store files in the file system.
  */
+@Service
 public class StorageServiceFiles implements StorageService {
 
     /**
@@ -49,12 +52,10 @@ public class StorageServiceFiles implements StorageService {
     }
 
     @Override
-    public String save(MultipartFile myFile) throws IOException {
+    public void save(MultipartFile myFile, String uuidName) throws IOException {
         assert storageDir != null;
-        String uuidName = UUID.randomUUID().toString();
         File destination = new File(storageDir, uuidName);
         myFile.transferTo(destination);
-        return uuidName;
     }
 
 

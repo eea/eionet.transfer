@@ -19,42 +19,37 @@
  */
 package eionet.transfer.dao;
 
-import java.util.List;
-import java.util.Date;
-
 import eionet.transfer.model.Upload;
+import java.io.IOException;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Service to store metadata for uploaded files.
+ * Backend service for storing uploads with metadata.
  */
 public interface UploadsService {
 
     /**
-     * Save the metadata for an upload.
+     * Save file and metadata.
      */
-    void save(Upload upload);
+    void storeFile(MultipartFile myFile, String uuidName, int fileTTL) throws IOException;
 
     /**
-     * Fetch the metadata for one upload.
+     * Download a file.
      */
-    Upload getById(String id);
+    Upload getById(String fileId) throws IOException;
 
     /**
-     * Delete metadata for file by Id.
-     */
-    void deleteById(String id);
-
-    /**
-     * Get a list of all files where the expiration date has passed.
+     * Return all expired items from the database.
      */
     List<String> getExpired();
 
     /**
-     * Get a list of all files where the expiration date has passed.
+     * Delete files by uuid.
      *
-     * @param expirationDate - The cut-off date.
+     * @param ids - list of uuids
      */
-    List<String> getExpired(Date expirationDate);
+    void deleteFiles(List<String> ids) throws IOException;
 
     /**
      * Get a list of all files where the expiration date has not passed.
@@ -62,19 +57,9 @@ public interface UploadsService {
     List<Upload> getUnexpired();
 
     /**
-     * Get a list of all files where the expiration date has not passed.
-     *
-     * @param expirationDate - The cut-off date.
+     * Method to show the user the max upload size.
      */
-    List<Upload> getUnexpired(Date expirationDate);
+    long getFreeSpace();
 
-    /**
-     * Get all records.
-     */
-    List<Upload> getAll();
-
-    /**
-     * Delete all metadata for all uploads. Mainly used for testing.
-     */
-    void deleteAll();
 }
+

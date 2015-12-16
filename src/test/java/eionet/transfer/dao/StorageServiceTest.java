@@ -38,8 +38,9 @@ public class StorageServiceTest {
         String testData = "ABCDEF";
         MultipartFile file = new MockMultipartFile("Testfile.txt", testData.getBytes());
 
-        String newId = storageService.save(file);
-        assertNotNull(newId);
+        String newId = "fac61f06-8328-4490-846b-055bbc62fea6";
+        storageService.save(file, newId);
+        //assertNotNull(newId);
 
         byte[] resultBuf = new byte[100];
 

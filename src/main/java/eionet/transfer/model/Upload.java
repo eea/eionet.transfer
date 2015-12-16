@@ -20,6 +20,7 @@
 package eionet.transfer.model;
 
 import eionet.transfer.util.Humane;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -34,6 +35,7 @@ public class Upload {
     private String uploader;
     private String contentType;
     private long fileSize;
+    private InputStream content;
 
     public String getId() {
         return id;
@@ -81,6 +83,14 @@ public class Upload {
 
     public void setSize(final long size) {
         this.fileSize = size;
+    }
+
+    public InputStream getContentAsStream() {
+        return content;
+    }
+
+    public void setContentStream(final InputStream content) {
+        this.content = content;
     }
 
     public String getHumaneSize() {

@@ -19,7 +19,6 @@
  */
 package eionet.transfer.controller;
 
-import eionet.transfer.dao.StorageService;
 import eionet.transfer.dao.UploadsService;
 import eionet.transfer.model.Upload;
 import eionet.transfer.util.BreadCrumbs;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -61,9 +61,6 @@ public class FileOpsController {
 
     @Autowired
     private UploadsService uploadsService;
-
-    @Autowired
-    private StorageService storageService;
 
     private Log logger = LogFactory.getLog(FileOpsController.class);
 
@@ -134,37 +131,9 @@ public class FileOpsController {
     }
 
     private String storeFile(MultipartFile myFile, int fileTTL) throws IOException {
-        String uuidName = storageService.save(myFile);
-        long now = System.currentTimeMillis();
-        Date expirationDate = new Date(now + fileTTL * 3600L * 24L * 1000L);
-
-        Upload rec = new Upload();
-        rec.setId(uuidName);
-        rec.setFilename(Filenames.removePath(myFile.getOriginalFilename()));
-        rec.setContentType(myFile.getContentType());
-        rec.setExpires(expirationDate);
-        rec.setSize(myFile.getSize());
-        String userName = getUserName();
-        rec.setUploader(userName);
-        uploadsService.save(rec);
-        logger.info("Uploaded: " + myFile.getOriginalFilename() + " by " + userName);
+        String uuidName = UUID.randomUUID().toString();
+        uploadsService.storeFile(myFile, uuidName, fileTTL);
         return uuidName;
-    }
-
-    /**
-     * Helper method to get authenticated userid.
-     */
-    private String getUserName() {
-        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
-        //if (auth == null) {
-        //    throw new IllegalArgumentException("Not authenticated");
-        //}
-        Object principal = auth.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        } else {
-            return principal.toString();
-        }
     }
 
     /**
@@ -189,23 +158,13 @@ public class FileOpsController {
     public void downloadFile(
         @PathVariable("file_name") String fileId, HttpServletResponse response) throws IOException {
 
-        Upload uploadRec;
-        try {
-            uploadRec = uploadsService.getById(fileId);
-        } catch (Exception e) {
-            throw new FileNotFoundException(fileId);
-        }
-        Date today = new Date(System.currentTimeMillis());
-        if (today.after(uploadRec.getExpires())) {
-            throw new FileNotFoundException(fileId);
-        }
-        InputStream is = null;
-        is = storageService.getById(fileId);
+        Upload uploadRec = uploadsService.getById(fileId);
         response.setContentType("application/octet-stream");
         //response.setContentLength(uploadRec.getSize()); // Too small - max 2.1 GB.
         response.setHeader("Content-Length", Long.toString(uploadRec.getSize()));
         response.setHeader("Content-Disposition", "attachment; filename=" + uploadRec.getFilename());
 
+        InputStream is = uploadRec.getContentAsStream();
         org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
         response.flushBuffer();
         is.close();
@@ -218,10 +177,7 @@ public class FileOpsController {
     private void deleteExpired() {
         try {
             List<String> expiredObjects = uploadsService.getExpired();
-            for (String fileId : expiredObjects) {
-                uploadsService.deleteById(fileId);
-                storageService.deleteById(fileId);
-            }
+            uploadsService.deleteFiles(expiredObjects);
         } catch (IOException ex) {
             logger.error("I/O exception when deleting expired files");
         }
@@ -243,10 +199,7 @@ public class FileOpsController {
     @RequestMapping(value = "/deletefiles", method = RequestMethod.POST)
     public String deleteFiles(@RequestParam("id") List<String> ids,
             final RedirectAttributes redirectAttributes) throws IOException {
-        for (String fileId : ids) {
-            uploadsService.deleteById(fileId);
-            storageService.deleteById(fileId);
-        }
+        uploadsService.deleteFiles(ids);
         redirectAttributes.addFlashAttribute("message", "File(s) deleted");
         return "redirect:/";
     }

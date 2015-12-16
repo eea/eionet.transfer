@@ -30,17 +30,21 @@ import javax.sql.DataSource;
 import eionet.transfer.model.Upload;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Service to store metadata for uploaded files using JDBC.
  */
-public class UploadsServiceJdbc implements UploadsService {
+@Service
+public class MetadataServiceJdbc implements MetadataService {
 
+    @Autowired
     private DataSource dataSource;
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    //public void setDataSource(DataSource dataSource) {
+    //    this.dataSource = dataSource;
+    //}
 
     @Override
     public void save(Upload upload) {

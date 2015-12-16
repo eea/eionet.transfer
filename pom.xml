@@ -265,10 +265,17 @@
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.4</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.javaswift</groupId>
+            <artifactId>joss</artifactId>
+            <version>0.9.8</version>
         </dependency>
         <!-- Spring 4 (Requires Tomcat 7) -->
         <dependency>

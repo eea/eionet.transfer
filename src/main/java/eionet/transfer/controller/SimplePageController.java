@@ -19,7 +19,7 @@
  */
 package eionet.transfer.controller;
 
-import eionet.transfer.dao.StorageService;
+import eionet.transfer.dao.UploadsService;
 import eionet.transfer.util.BreadCrumbs;
 import eionet.transfer.util.Humane;
 import org.springframework.stereotype.Controller;
@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SimplePageController {
 
     @Autowired
-    private StorageService storageService;
+    private UploadsService uploadsService;
 
     /**
      * Frontpage.
@@ -56,7 +56,7 @@ public class SimplePageController {
     @RequestMapping(value = "/about")
     public String about(Model model) {
         String title = "About";
-        long freeSpace = storageService.getFreeSpace();
+        long freeSpace = uploadsService.getFreeSpace();
         model.addAttribute("freespace", Humane.humaneSize(freeSpace));
         model.addAttribute("title", title);
         BreadCrumbs.set(model, title);

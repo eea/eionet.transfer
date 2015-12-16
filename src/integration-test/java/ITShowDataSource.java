@@ -28,7 +28,6 @@ public class ITShowDataSource {
         //Get the Spring Context
         ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
          
-        //Get the UploadsService Bean from the context.
         dataSource = ctx.getBean("dataSource", DriverManagerDataSource.class);
     }
 
