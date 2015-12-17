@@ -39,12 +39,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class MetadataServiceJdbc implements MetadataService {
 
-    @Autowired
+    //@Autowired
     private DataSource dataSource;
 
-    //public void setDataSource(DataSource dataSource) {
-    //    this.dataSource = dataSource;
-    //}
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void save(Upload upload) {

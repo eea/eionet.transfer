@@ -20,11 +20,11 @@
         <property name="password" value="${db.password}" />
     </bean>
 
-    <!--
     <bean id="metadataService" class="eionet.transfer.dao.MetadataServiceJdbc">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    -->
+
+    <bean id="uploadsService" class="eionet.transfer.dao.UploadsServiceDBFiles"/>
 
     <bean id="storageService" class="eionet.transfer.dao.StorageServiceFiles">
         <property name="storageDir" value="${storage.dir}" />
