@@ -16,6 +16,9 @@
         <property name="swiftMock" value="true" />
     </bean>
 
-    <bean id="uploadsServiceDB" class="eionet.transfer.dao.UploadsServiceDBFiles"/>
+    <bean id="uploadsServiceDB" class="eionet.transfer.dao.UploadsServiceDBFiles">
+        <property name="metadataService" ref="metadataService" />
+        <property name="storageService" ref="storageService" />
+    </bean>
 
 </beans>

@@ -19,25 +19,27 @@
  */
 package eionet.transfer.dao;
 
-import eionet.transfer.model.Upload;
 import eionet.transfer.controller.FileNotFoundException;
+import eionet.transfer.model.Upload;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javaswift.joss.client.factory.AccountConfig;
 import org.javaswift.joss.client.factory.AccountFactory;
+import org.javaswift.joss.exception.NotFoundException;
 import org.javaswift.joss.model.Account;
 import org.javaswift.joss.model.Container;
+import org.javaswift.joss.model.DirectoryOrObject;
 import org.javaswift.joss.model.StoredObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,22 +49,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UploadsServiceSwift implements UploadsService {
 
-    /**
-     * The swift location where to store the uploaded files.
-     */
-    @Value("${swift.authurl}")
     private String swiftAuthUrl;
 
-    @Value("${swift.tenantid}")
     private String swiftTenantId;
 
-    @Value("${swift.username}")
+    /** * The swift location where to store the uploaded files.  */
+    private String swiftContainer = "transfer";
+
     private String swiftUsername;
 
-    @Value("${swift.password}")
     private String swiftPassword;
 
-    @Value("${swift.mock}")
+    /** Set to the string "true" if testing. */
     private String swiftMock;
 
     private AccountConfig config;
@@ -73,15 +71,28 @@ public class UploadsServiceSwift implements UploadsService {
 
     private Log logger = LogFactory.getLog(UploadsServiceSwift.class);
 
-    /**
-     * Constructor.
-     */
-    public UploadsServiceSwift() {
-        if (swiftUsername != null && swiftPassword != null && swiftAuthUrl != null) {
-            login();
-        } else {
-            logger.info("Swift storage account is not configured");
-        }
+    public void setSwiftAuthUrl(String swiftAuthUrl) {
+        this.swiftAuthUrl = swiftAuthUrl;
+    }
+
+    public void setSwiftTenantId(String swiftTenantId) {
+        this.swiftTenantId = swiftTenantId;
+    }
+
+    public void setSwiftContainer(String swiftContainer) {
+        this.swiftContainer = swiftContainer;
+    }
+
+    public void setSwiftUsername(String swiftUsername) {
+        this.swiftUsername = swiftUsername;
+    }
+
+    public void setSwiftPassword(String swiftPassword) {
+        this.swiftPassword = swiftPassword;
+    }
+
+    public void setSwiftMock(String swiftMock) {
+        this.swiftMock = swiftMock;
     }
 
     /**
@@ -89,15 +100,21 @@ public class UploadsServiceSwift implements UploadsService {
      * FIXME: Test
      */
     private void login() {
+        if (swiftUsername == null || swiftPassword == null || swiftAuthUrl == null) {
+            System.out.println("ERROR: Swift storage account is not configured");
+            logger.error("Swift storage account is not configured");
+        }
         config = new AccountConfig();
         config.setUsername(swiftUsername);
         config.setPassword(swiftPassword);
         config.setAuthUrl(swiftAuthUrl);
         config.setTenantId(swiftTenantId);
 //      config.setTenantName(swiftTenantName);
-        config.setMock(true);
+        if (swiftMock != null) {
+            config.setMock(Boolean.valueOf(swiftMock));
+        }
         account = new AccountFactory(config).createAccount();
-        container = account.getContainer("transfer");
+        container = account.getContainer(swiftContainer);
         if (!container.exists()) {
             container.create();
         }
@@ -107,14 +124,26 @@ public class UploadsServiceSwift implements UploadsService {
 // https://github.com/javaswift/joss/blob/master/src/main/java/org/javaswift/joss/model/StoredObject.java
     @Override
     public void storeFile(MultipartFile myFile, String fileId, int fileTTL) throws IOException {
+        if (swiftUsername == null) {
+            System.out.println("Swift username is not configured");
+        }
         assert swiftUsername != null;
+        if (config == null) {
+            login();
+        }
         StoredObject swiftObject = container.getObject(fileId);
-        swiftObject.setContentType(myFile.getContentType());
         swiftObject.uploadObject(myFile.getInputStream());
+        if (myFile.getContentType() != null) {
+            swiftObject.setContentType(myFile.getContentType());
+        }
 
         Map<String, Object> metadata = new HashMap<String, Object>();
-        metadata.put("filename", myFile.getOriginalFilename());
-        metadata.put("content-type", myFile.getContentType());
+        if (myFile.getOriginalFilename() != null) {
+            metadata.put("filename", myFile.getOriginalFilename());
+        }
+        if (myFile.getContentType() != null) {
+            metadata.put("content-type", myFile.getContentType());
+        }
         swiftObject.setMetadata(metadata);
         swiftObject.saveMetadata();
         //swiftObject.setDeleteAt(Date date);
@@ -123,6 +152,9 @@ public class UploadsServiceSwift implements UploadsService {
 
     @Override
     public Upload getById(String fileId) throws IOException {
+        if (config == null) {
+            login();
+        }
         Upload uploadRec = new Upload();
         StoredObject swiftObject = null;
         try {
@@ -136,25 +168,37 @@ public class UploadsServiceSwift implements UploadsService {
         uploadRec.setContentType((String) metadata.get("content-type"));
         uploadRec.setSize(swiftObject.getContentLength());
         Date today = new Date(System.currentTimeMillis());
-        if (today.after(uploadRec.getExpires())) {
-            throw new FileNotFoundException(fileId);
+        if (uploadRec.getExpires() != null) {
+            if (today.after(uploadRec.getExpires())) {
+                throw new FileNotFoundException(fileId);
+            }
         }
-
         uploadRec.setContentStream(swiftObject.downloadObjectAsInputStream());
         return uploadRec;
     }
 
     @Override
-    public void deleteFiles(List<String> ids) throws IOException {
-        for (String fileId : ids) {
+    public boolean deleteById(String fileId) throws IOException {
+        try {
             StoredObject swiftObject = container.getObject(fileId);
             swiftObject.delete();
+            return true;
+        } catch (NotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void deleteFiles(List<String> ids) throws IOException {
+        for (String fileId : ids) {
+            deleteById(fileId);
         }
     }
 
     @Override
     public List<Upload> getUnexpired() {
-        //FIXME
+        //FIXME: Implement
+        Collection<DirectoryOrObject> c = container.listDirectory();
         return new ArrayList<Upload>(0);
     }
 

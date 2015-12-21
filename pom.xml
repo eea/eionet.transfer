@@ -95,8 +95,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.19</version>
                 <configuration>
+                  <systemPropertyVariables>
+                    <swift.username>elefant</swift.username>
+                    <swift.password></swift.password>
+                    <swift.authurl>https://identity.stack.cloudvps.com/v2.0</swift.authurl>
+                    <swift.tenantid>771b8f3c956b4244bf355a135cdfc580</swift.tenantid>
+                    <swift.mock>true</swift.mock>
+                  </systemPropertyVariables>
                 </configuration>
             </plugin>
 

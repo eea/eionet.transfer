@@ -60,8 +60,17 @@ public class UploadsServiceDBFiles implements UploadsService {
 
     private Log logger = LogFactory.getLog(UploadsServiceDBFiles.class);
 
+    public void setMetadataService(MetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
+
+    public void setStorageService(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
     public void storeFile(MultipartFile myFile, String uuidName, int fileTTL) throws IOException {
         storageService.save(myFile, uuidName);
+        System.out.println("After storage save");
         long now = System.currentTimeMillis();
         Date expirationDate = new Date(now + fileTTL * 3600L * 24L * 1000L);
 
@@ -73,7 +82,9 @@ public class UploadsServiceDBFiles implements UploadsService {
         rec.setSize(myFile.getSize());
         String userName = getUserName();
         rec.setUploader(userName);
+        System.out.println("Before metadata save");
         metadataService.save(rec);
+        System.out.println("After metadata save");
         logger.info("Uploaded: " + myFile.getOriginalFilename() + " by " + userName);
     }
 
@@ -82,9 +93,10 @@ public class UploadsServiceDBFiles implements UploadsService {
      */
     private String getUserName() {
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
-        //if (auth == null) {
-        //    throw new IllegalArgumentException("Not authenticated");
-        //}
+        if (auth == null) {
+            return "UNAUTHENTICATED";
+            //throw new IllegalArgumentException("Not authenticated");
+        }
         Object principal = auth.getPrincipal();
         if (principal instanceof UserDetails) {
             return ((UserDetails) principal).getUsername();
@@ -110,6 +122,12 @@ public class UploadsServiceDBFiles implements UploadsService {
         }
         uploadRec.setContentStream(storageService.getById(fileId));
         return uploadRec;
+    }
+
+    @Override
+    public boolean deleteById(String fileId) throws IOException {
+        metadataService.deleteById(fileId);
+        return storageService.deleteById(fileId);
     }
 
     @Override

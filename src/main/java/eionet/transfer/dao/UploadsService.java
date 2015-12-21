@@ -44,6 +44,8 @@ public interface UploadsService {
      */
     List<String> getExpired();
 
+    boolean deleteById(String fileId) throws IOException;
+
     /**
      * Delete files by uuid.
      *

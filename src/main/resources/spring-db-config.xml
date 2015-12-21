@@ -11,6 +11,13 @@
     <util:properties id="cas" location="classpath:cas.properties"/>
     <util:properties id="application" location="classpath:application.properties"/>
 
+<!--
+    <context:property-placeholder
+            system-properties-mode="OVERRIDE"
+            location="classpath:cap.properties,
+                      classpath:application.properties"
+            ignore-unresolvable="true"/>
+-->
     <context:property-placeholder order="0" ignore-unresolvable="true" system-properties-mode="OVERRIDE" properties-ref="application"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

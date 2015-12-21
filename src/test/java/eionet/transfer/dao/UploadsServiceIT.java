@@ -8,50 +8,79 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.mock.web.MockMultipartFile;
-
-import eionet.transfer.model.Upload;
-import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class UploadsServiceTest {
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.runner.RunWith;
+import org.junit.Test;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
+
+import eionet.transfer.model.Upload;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(locations = {"classpath:spring-mvc-config.xml",
+        "classpath:spring-db-config.xml", "classpath:spring-uploadtest-config.xml"})
+
+/**
+ * Test the file operations.
+ */
+public class UploadsServiceIT {
+
+    /*
+    @Configuration
+    @ComponentScan(basePackages = {"eionet.transfer.dao"})
+    static class TestConfiguration {}
+    */
+
+    @Autowired
+    private WebApplicationContext ctx;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
     @Test
     public void productionTest() throws Exception {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
+        //ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml");
 
         UploadsService uploadsService = ctx.getBean("uploadsService", UploadsService.class);
         uploadAndDelete(uploadsService);
-        ctx.close();
+        //ctx.close();
     }
 
     @Test
     public void swiftTest() throws Exception {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml", "spring-uploadtest-config.xml");
+        //ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml", "spring-uploadtest-config.xml");
 
         UploadsService uploadsService = ctx.getBean(UploadsServiceSwift.class);
         uploadAndDelete(uploadsService);
-        ctx.close();
+        //ctx.close();
     }
 
     @Test
     public void dbTest() throws Exception {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml", "spring-uploadtest-config.xml");
+        //ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring-db-config.xml", "spring-uploadtest-config.xml");
 
         UploadsService uploadsService = ctx.getBean("uploadsServiceDB", UploadsServiceDBFiles.class);
         uploadAndDelete(uploadsService);
-        ctx.close();
+        //ctx.close();
     }
 
     private void uploadAndDelete(UploadsService uploadsService) throws Exception {
