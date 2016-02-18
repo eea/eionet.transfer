@@ -420,7 +420,7 @@
                       <alias>service</alias>
                       <name>dockerrepo.eionet.europa.eu:5000/${project.groupId}/${project.artifactId}</name>
                       <build>
-                        <from>tomcat:8.0.28-jre7</from>
+                        <from>tomcat:8.0.32-jre7</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
                         <tags>
                           <tag>latest</tag>
