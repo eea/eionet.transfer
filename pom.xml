@@ -17,7 +17,8 @@
         <thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
         <checkstyle.config.location>${basedir}/doc/checkstyle.xml</checkstyle.config.location>
         <!-- <liquibase.changeLogFile>database/database-struct.xml</liquibase.changeLogFile> -->
-        <docker.maven.plugin.rhuss.version>0.13.4</docker.maven.plugin.rhuss.version>
+        <docker.maven.plugin.rhuss.version>0.13.6</docker.maven.plugin.rhuss.version>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HHmm</maven.build.timestamp.format>
     </properties>
 
     <version>1.1-SNAPSHOT</version>
@@ -265,13 +266,13 @@
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
         </dependency>
-        <!--
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.4</version>
         </dependency>
-        -->
+
         <dependency>
             <groupId>org.javaswift</groupId>
             <artifactId>joss</artifactId>
@@ -348,26 +349,13 @@
             <version>${spring.security.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.5.1</version>
+            <scope>test</scope>
+        </dependency>
 
-        <!-- Unitils -->
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-core</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-dbunit</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.unitils</groupId>
-            <artifactId>unitils-spring</artifactId>
-            <version>3.4.2</version>
-            <scope>test</scope>
-        </dependency>
         <!-- End TEST dependencies -->
 
     </dependencies>
@@ -413,7 +401,6 @@
           <build>
             <plugins>
               <plugin>
-                <!-- The Docker Maven plugin is used to create docker image with the fat jar -->
                 <groupId>org.jolokia</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker.maven.plugin.rhuss.version}</version>
@@ -424,20 +411,18 @@
                   <images>
                     <image>
                       <alias>service</alias>
-                      <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}</name>
+                      <name>dockerrepo.eionet.europa.eu:5000/${project.groupId}/${project.artifactId}</name>
                       <build>
                         <from>tomcat:8.0.28-jre7</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
                         <tags>
                           <tag>latest</tag>
                           <tag>${project.version}</tag>
+                          <tag>${maven.build.timestamp}</tag>
                         </tags>
                         <assembly>
                           <descriptor>assembly.xml</descriptor>
                         </assembly>
-                        <env>
-                          <CATALINA_OPTS>-Dinitial.username=roug -Djava.security.egd=file:/dev/./urandom -Dcas.service=http://localhost:4580 -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
-                        </env>
                         <runCmds>
                           <run>rm -rf /usr/local/tomcat/webapps/*</run>
                           <run>mv /maven/transfer.war /usr/local/tomcat/webapps/ROOT.war</run>
@@ -458,6 +443,9 @@
                       <!-- Runtime configuration for starting/stopping/linking containers -->
                       <!-- ............................................................... -->
                       <run>
+                        <env>
+                          <CATALINA_OPTS>-Dinitial.username=roug -Djava.security.egd=file:/dev/./urandom -Dcas.service=http://localhost:4580 -Ddb.url=jdbc:h2:tcp://database:1521//var/tmp/transferdb</CATALINA_OPTS>
+                        </env>
                         <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
                         <ports>
                           <port>tomcat.port:8080</port>
@@ -480,13 +468,13 @@
 
                     <image>
                       <alias>database</alias>
-                      <name>dockerrepo.eionet.europa.eu:5000/${project.artifactId}-db</name>
-                      <!-- <registry>dockerrepo.eionet.europa.eu:5000</registry> -->
+                      <name>dockerrepo.eionet.europa.eu:5000/${project.groupId}/${project.artifactId}-db</name>
                       <build>
                         <from>java:8</from>
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
                         <tags>
                           <tag>latest</tag>
+                          <tag>${maven.build.timestamp}</tag>
                         </tags>
                         <env>
                           <H2_RELEASE_DATE>2015-10-11</H2_RELEASE_DATE>
@@ -562,9 +550,6 @@
 
             </plugins>
           </build>
-          <activation>
-            <activeByDefault/>
-          </activation>
         </profile>
     </profiles>
 </project>
