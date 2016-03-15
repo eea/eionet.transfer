@@ -18,12 +18,15 @@
         <checkstyle.config.location>${basedir}/doc/checkstyle.xml</checkstyle.config.location>
         <!-- <liquibase.changeLogFile>database/database-struct.xml</liquibase.changeLogFile> -->
         <docker.maven.plugin.rhuss.version>0.13.6</docker.maven.plugin.rhuss.version>
-        <maven.build.timestamp.format>yyyy-MM-dd'T'HHmm</maven.build.timestamp.format>
     </properties>
 
     <version>1.1-SNAPSHOT</version>
     <name>transfer</name>
     <url>http://transfer.eea.europa.eu</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/eea/eionet.transfer.git</connection>
+    </scm>
 
     <!-- configuration of Maven repositories to be used -->
 
@@ -124,6 +127,30 @@
                         </resource>
                     </webResources>
                 </configuration>
+            </plugin>
+
+            <!-- See http://www.mojohaus.org/buildnumber-maven-plugin/ -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <!--
+                    <format>{0,date,yyyy-MM-dd'T'HHmm}</format>
+                    <items>
+                        <item>timestamp</item>
+                    </items>
+                    -->
+                    <shortRevisionLength>7</shortRevisionLength>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                     </execution>
+                </executions>
             </plugin>
 
             <!-- Update database tables -->
@@ -425,7 +452,7 @@
                         <tags>
                           <tag>latest</tag>
                           <tag>${project.version}</tag>
-                          <tag>${maven.build.timestamp}</tag>
+                          <tag>${buildNumber}</tag>
                         </tags>
                         <assembly>
                           <descriptor>assembly.xml</descriptor>
@@ -481,7 +508,7 @@
                         <maintainer>Søren Roug &lt;soren.roug@eea.europa.eu&gt;</maintainer>
                         <tags>
                           <tag>latest</tag>
-                          <tag>${maven.build.timestamp}</tag>
+                          <tag>${buildNumber}</tag>
                         </tags>
                         <env>
                           <H2_RELEASE_DATE>2015-10-11</H2_RELEASE_DATE>
