@@ -11,9 +11,9 @@ create tables, load initial data and launch.
 Dependencies
 ------------
 * Tomcat 8
-* Java 1.7
+* Java 1.8
 * Spring 4
-* Thymeleaf 2.1.4
+* Thymeleaf 2.1
 * H2 Database Engine
 
 Automated tests
