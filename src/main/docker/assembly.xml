@@ -23,6 +23,7 @@
       <outputFileNameMapping>transfer.war</outputFileNameMapping>
     </dependencySet>
     <!-- Get the preconfigured Jolokia from the repository. Look for the dependency in pom.xml -->
+    <!--
     <dependencySet>
       <includes>
         <include>eionet:jolokia:war</include>
@@ -30,5 +31,6 @@
       <outputDirectory>.</outputDirectory>
       <outputFileNameMapping>jolokia.war</outputFileNameMapping>
     </dependencySet>
+    -->
   </dependencySets>
 </assembly>

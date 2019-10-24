@@ -424,6 +424,7 @@
           <properties>
             <tomcat.port>4580</tomcat.port>
           </properties>
+          <!--
           <dependencies>
             <dependency>
                 <groupId>eionet</groupId>
@@ -432,6 +433,7 @@
                 <type>war</type>
             </dependency>
           </dependencies>
+          -->
           <build>
             <plugins>
               <plugin>
@@ -460,7 +462,9 @@
                         <runCmds>
                           <run>rm -rf /usr/local/tomcat/webapps/*</run>
                           <run>mv /maven/transfer.war /usr/local/tomcat/webapps/ROOT.war</run>
+                          <!--
                           <run>mv /maven/jolokia.war /usr/local/tomcat/webapps/jolokia.war</run>
+                          -->
                         </runCmds>
                         <optimise>true</optimise>
 
@@ -488,7 +492,7 @@
                           <!-- Check for this URL to return a 200 return code .... -->
                           <url>http://${docker.host.address}:${tomcat.port}/about</url>
                           <!-- ... but at max 60 seconds -->
-                          <time>60000</time>
+                          <time>90000</time>
                         </wait>
                         <links>
                           <link>database</link>
